@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { toast } from 'react-toastify';
 import {
     Avatar,
     Button,
@@ -18,6 +20,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import Request from '../helper/Request';
 
 // style function
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Signup = () => {
     const classes = useStyles();
+    const history = useHistory();
 
     // states
     const [isShowPassword, setIsShowPassword] = useState(false);
@@ -63,9 +67,17 @@ const Signup = () => {
         password: '',
     }
 
+    // handleSubmit
     const onSubmit = (values) => {
-        alert(JSON.stringify(values));
-
+        alert(JSON.stringify(values)); //TODO: Don't forget deleting
+        Request.getData('..............', values) //TODO: Don't forget path
+            .then(() => {
+                toast('Successfully registered');
+                history.push('/login');
+            })
+            .catch(error => {
+                toast(error?.message || 'An error occured');
+            })
     }
 
     // formik
