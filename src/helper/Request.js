@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export default class Request {
 
-    async getData(path) {
+    static async getData(path) {
         const token = 'token';
         const response = await axios.get(path, {
             headers: { token, },
@@ -11,7 +11,7 @@ export default class Request {
         return response?.data;
     }
 
-    async postData(path, data) {
+    static async postData(path, data) {
         const token = localStorage.getItem('token');
         const response = await axios.post(path, data, {
             headers: { token, },
