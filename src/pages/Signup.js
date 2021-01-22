@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import {
     Avatar,
     Button,
@@ -21,6 +21,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Request from '../helper/Request';
+import 'react-toastify/dist/ReactToastify.css';
 
 // style function
 const useStyles = makeStyles((theme) => ({
@@ -72,11 +73,11 @@ const Signup = () => {
         alert(JSON.stringify(values)); //TODO: Don't forget deleting
         Request.getData('..............', values) //TODO: Don't forget path
             .then(() => {
-                toast('Successfully registered');
+                toast.success('Successfully registered');
                 history.push('/login');
             })
             .catch(error => {
-                toast(error?.message || 'An error occured');
+                toast.error(error?.message || 'An error occured');
             })
     }
 
@@ -98,6 +99,17 @@ const Signup = () => {
 
     return (
         <Container component='main' maxWidth='xs'>
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
