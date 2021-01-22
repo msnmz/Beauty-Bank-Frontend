@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 import {
     Avatar,
     Button,
@@ -44,6 +46,35 @@ const Signup = () => {
     // states
     const [isShowPassword, setIsShowPassword] = useState(false);
 
+    // validation obj
+    const validationSchema = yup.object().shape({
+        firstName: yup.string().required('This field is required'),
+        lastName: yup.string().required('This field is required'),
+        email: yup.string().required('This field is required').email('Invalid e-mail'),
+        password: yup.string().required('This field is required'),
+        // TODO: search whether there is extra validation for password.
+    });
+
+    // initial values
+    const initialValues = {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+    }
+
+    const onSubmit = (values) => {
+        alert(JSON.stringify(values));
+
+    }
+
+    // formik
+    const formik = useFormik({
+        initialValues,
+        validationSchema,
+        onSubmit
+    })
+
     // handle functions
     const handleClickShowPassword = () => {
         setIsShowPassword(!isShowPassword);
@@ -62,7 +93,7 @@ const Signup = () => {
                 <Typography component='h1' variant='h5'>
                     Sign up
                 </Typography>
-                <form className={classes.form} noValidate>
+                <form className={classes.form} noValidate onSubmit={formik.handleSubmit}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <TextField
@@ -73,6 +104,9 @@ const Signup = () => {
                                 fullWidth
                                 label='First Name'
                                 autoFocus
+                                {...formik.getFieldProps('firstName')}
+                                error={formik.touched.firstName && formik.errors.firstName}
+                                helperText={formik.touched.firstName && formik.errors.firstName}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -83,6 +117,9 @@ const Signup = () => {
                                 label='Last Name'
                                 name='lastName'
                                 autoComplete='lname'
+                                {...formik.getFieldProps('lastName')}
+                                error={formik.touched.lastName && formik.errors.lastName}
+                                helperText={formik.touched.lastName && formik.errors.lastName}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -93,6 +130,9 @@ const Signup = () => {
                                 label='Email Address'
                                 name='email'
                                 autoComplete='email'
+                                {...formik.getFieldProps('email')}
+                                error={formik.touched.email && formik.errors.email}
+                                helperText={formik.touched.email && formik.errors.email}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -116,11 +156,14 @@ const Signup = () => {
                                             </IconButton>
                                         </InputAdornment>),
                                 }}
+                                {...formik.getFieldProps('password')}
+                                error={formik.touched.password && formik.errors.password}
+                                helperText={formik.touched.password && formik.errors.password}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <FormControlLabel
-                                control={<Checkbox value='allowExtraEmails' color='primary' />}
+                                control={<Checkbox name='extraMail' value='allowExtraEmails' color='primary' {...formik.getFieldProps('ExtraMail')} />}
                                 label='I want to receive inspiration, marketing promotions and updates via email.'
                             />
                         </Grid>
