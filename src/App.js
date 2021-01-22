@@ -1,8 +1,10 @@
+import AppRouter from './router/Router';
+
 function App() {
   return (
-    <div >
-      Beauty Project
-    </div>
+    <>
+      <AppRouter />
+    </>
   );
 }
 
