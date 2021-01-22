@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
+
 import {
     Avatar,
     Button,
@@ -44,6 +47,30 @@ const Signin = () => {
     // states
     const [isShowPassword, setIsShowPassword] = useState(false);
 
+    // validation schema
+    const validationSchema = yup.object().shape({
+        email: yup.string().required('This field is required').email('Invalid e-mail'),
+        password: yup.string().required('This field is required'),
+    });
+
+    // initial values
+    const initialValues = {
+        email: '',
+        password: '',
+    }
+
+    // handleSubmit
+    const onSubmit = values => {
+        alert(JSON.stringify(values));
+    }
+
+    // formik
+    const formik = useFormik({
+        initialValues,
+        validationSchema,
+        onSubmit,
+    });
+
     // handle functions
     const handleClickShowPassword = () => {
         setIsShowPassword(!isShowPassword);
@@ -62,7 +89,7 @@ const Signin = () => {
                 <Typography component='h1' variant='h5'>
                     Sign in
                 </Typography>
-                <form className={classes.form} noValidate>
+                <form className={classes.form} noValidate onSubmit={formik.handleSubmit}>
                     <TextField
                         variant='outlined'
                         margin='normal'
@@ -73,6 +100,9 @@ const Signin = () => {
                         name='email'
                         autoComplete='email'
                         autoFocus
+                        {...formik.getFieldProps('email')}
+                        error={formik.touched.email && formik.errors.email}
+                        helperText={formik.touched.email && formik.errors.email}
                     />
                     <TextField
                         variant='outlined'
@@ -96,9 +126,12 @@ const Signin = () => {
                                     </IconButton>
                                 </InputAdornment>),
                         }}
+                        {...formik.getFieldProps('password')}
+                        error={formik.touched.password && formik.errors.password}
+                        helperText={formik.touched.password && formik.errors.password}
                     />
                     <FormControlLabel
-                        control={<Checkbox value='remember' color='primary' />}
+                        control={<Checkbox name='isRemember' value='remember' color='primary' {...formik.getFieldProps('isRemember')} />}
                         label='Remember me'
                     />
                     <Button
@@ -117,8 +150,9 @@ const Signin = () => {
                             </Link>
                         </Grid>
                         <Grid item>
-                            <Link href='#' variant='body2'>
-                                {"Don't have an account? Sign Up"}
+                            Don't have an account?{' '}
+                            <Link href='/register' variant='body2'>
+                                Sign Up
                             </Link>
                         </Grid>
                     </Grid>
