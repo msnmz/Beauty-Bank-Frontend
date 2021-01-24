@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { toast, ToastContainer } from 'react-toastify';
 import {
     Avatar,
     Button,
@@ -22,6 +21,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Request from '../helper/Request';
 import 'react-toastify/dist/ReactToastify.css';
+import { Modal } from '../components/Index';
 
 // style function
 const useStyles = makeStyles((theme) => ({
@@ -50,6 +50,7 @@ const Signup = () => {
 
     // states
     const [isShowPassword, setIsShowPassword] = useState(false);
+    const [modal, setModal] = useState({ isOpen: false, message: '' });
 
     // validation obj
     const validationSchema = yup.object().shape({
@@ -70,14 +71,13 @@ const Signup = () => {
 
     // handleSubmit
     const onSubmit = (values) => {
-        alert(JSON.stringify(values)); //TODO: Don't forget deleting
+
         Request.getData('..............', values) //TODO: Don't forget path
             .then(() => {
-                toast.success('Successfully registered');
                 history.push('/login');
             })
             .catch(error => {
-                toast.error(error?.message || 'An error occured');
+                modalTrigger();
             })
     }
 
@@ -97,19 +97,12 @@ const Signup = () => {
         event.preventDefault();
     };
 
+    const modalTrigger = () => {
+        setModal({ isOpen: !modal.isOpen, message: 'Successfully registered' })
+    }
+
     return (
         <Container component='main' maxWidth='xs'>
-            <ToastContainer
-                position="top-center"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
@@ -210,7 +203,9 @@ const Signup = () => {
                     </Grid>
                 </form>
             </div>
+            <Modal isOpen={modal.isOpen} message={modal.message} modalTrigger={modalTrigger} />
         </Container>
+
     );
 }
 
