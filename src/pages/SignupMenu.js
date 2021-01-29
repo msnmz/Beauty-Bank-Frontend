@@ -122,13 +122,13 @@ const SignupMenu = () => {
                                     subheader={item.subheader}
                                     titleTypographyProps={{ align: 'center' }}
                                     subheaderTypographyProps={{ align: 'center' }}
-                                    action={item.title === 'Volunteer' || item.title === 'Sponsor' ? <StarIcon /> : null}
+                                    action={item.title === 'Professional' ? <StarIcon /> : null}
                                     className={classes.cardHeader}
                                 />
                                 <CardMedia
 
                                     className={classes.cardMedia}
-                                    image={item.imageURL}
+                                    image="https://source.unsplash.com/random"
                                     title={JSON.stringify(item.imageURL)}
                                 />
                                 <CardContent>
