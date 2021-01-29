@@ -180,7 +180,8 @@ const Signup = () => {
                         </Grid>
                         <Grid item xs={12}>
                             <FormControlLabel
-                                control={<Checkbox name='extraMail' value='allowExtraEmails' color='primary' {...formik.getFieldProps('ExtraMail')} />}
+                                control={<Checkbox name='extraMail' value='allowExtraEmails' color='primary' 
+                                {...formik.getFieldProps('ExtraMail')} />}
                                 label='I want to receive inspiration, marketing promotions and updates via email.'
                             />
                         </Grid>
