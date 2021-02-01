@@ -6,12 +6,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
     Paper, Grid, Typography, Avatar, TextField, Checkbox, Button, Link, InputAdornment, IconButton, Select, MenuItem, FormControl, InputLabel,
 } from '@material-ui/core';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Modal } from '../components/Index';
 // import Request from '../helper/Request';
-// import { Label } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
     layout: {
@@ -40,6 +38,8 @@ const useStyles = makeStyles((theme) => ({
     avatar: {
         margin: theme.spacing(1),
         backgroundColor: theme.palette.secondary.main,
+        width: theme.spacing(7),
+        height: theme.spacing(7),
     },
     form: {
         width: '100%', // Fix IE 11 issue.
@@ -70,13 +70,15 @@ const SignupDetail = () => {
         email: yup.string().required('This field is required').email('Invalid e-mail').min(4, 'Must be at least 4 characters').max(30, 'Must be a maximum of 30 characters'),
         password: yup.string().required('This field is required').min(6, 'Must be at least 6 characters').max(30, 'Must be a maximum of 30 characters'),
         passwordConfirm: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
-        zip: yup.string().required('This field is required').min(1, 'Must be at least 1 characters').max(30, 'Must be a maximum of 8 characters'),
         phone: yup.string().required('This field is required').min(1, 'Must be at least 1 characters').max(20, 'Must be a maximum of 20 characters'),
-        aboutMe: yup.string().required('This field is required').min(1, 'Must be at least 1 characters').max(1500, 'Must be a maximum of 1500 characters'),
         conditions: yup.bool().oneOf([true], 'This field is required'),
-        companyName: yup.string().max(100, 'Must be a maximum of 100 characters'),
-        gender: yup.number().min(0).max(2),
-        capacity: yup.number(),
+        ...(id === 'professional' && {
+            zip: yup.string().required('This field is required').min(1, 'Must be at least 1 characters').max(30, 'Must be a maximum of 8 characters'),
+            aboutMe: yup.string().required('This field is required').min(1, 'Must be at least 1 characters').max(1500, 'Must be a maximum of 1500 characters'),
+            companyName: yup.string().max(100, 'Must be a maximum of 100 characters'),
+            gender: yup.number().min(0).max(2),
+            capacity: yup.number().min(0),
+        })
         // TODO: search whether there is extra validation for password.
     });
 
@@ -88,15 +90,17 @@ const SignupDetail = () => {
         email: '',
         password: '',
         passwordConfirm: '',
-        zip: '',
         phone: '',
-        aboutMe: '',
-        companyName: '',
-        gender: null,
-        capacity: 0,
-        conditions: false
+        conditions: false,
+        ...(id === 'professional' && {
+            aboutMe: '',
+            zip: '',
+            companyName: '',
+            gender: null,
+            capacity: 0,
+        })
     }
-
+    // alert(JSON.stringify(initialValues));
     // handleSubmit
     const onSubmit = (values) => {
         // Request.getData('..............', values) //TODO: Don't forget path
@@ -133,9 +137,7 @@ const SignupDetail = () => {
     return (
         <main className={classes.layout}>
             <Paper className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
+                <Avatar alt="Beauty Bank" src='../images/logo.jpg' className={classes.avatar} />
                 <Typography component='h1' variant='h5'>
                     Register
                 </Typography>
@@ -247,65 +249,68 @@ const SignupDetail = () => {
                             />
                         </Grid>
                         {/* company name */}
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                label='Company'
-                                name='companyName'
-                                autoComplete="companyName"
-                                fullWidth
-                                {...formik.getFieldProps('companyName')}
-                                error={formik.touched.companyName && formik.errors.companyName}
-                                helperText={formik.touched.companyName && formik.errors.companyName}
-                            />
-                        </Grid>
-                        {/* for gender */}
-                        <Grid item xs={12} sm={6}>
-                            <FormControl className={classes.formControl}>
-                                <InputLabel id="gender-select-helper-label">Gender</InputLabel>
-                                <Select
-                                    labelId="gender-select-helper-label"
-                                    id="gender-select-helper"
-                                    name='gender'
-                                    {...formik.getFieldProps('gender')}
-                                    error={formik.touched.companyName && formik.errors.companyName}
-                                    helperText={formik.touched.companyName && formik.errors.companyName}
-                                >
-                                    <MenuItem value={null}><em>None</em></MenuItem>
-                                    <MenuItem value={0}>Female</MenuItem>
-                                    <MenuItem value={1}>Male</MenuItem>
-                                    <MenuItem value={2}>I don't say</MenuItem>
-                                </Select>
-                                {/* <FormHelperText>Some important helper text</FormHelperText> */}
-                            </FormControl>
-                        </Grid>
-                        {/* reservred_capacity */}
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                label='Capacity'
-                                name='capacity'
-                                autoComplete='capacity'
-                                fullWidth
-                                type='number'
-                                {...formik.getFieldProps('capacity')}
-                                error={formik.touched.capacity && formik.errors.capacity}
-                                helperText={formik.touched.capacity && formik.errors.capacity}
-                            />
-                        </Grid>
-                        {/* zip */}
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                label='Zip / Postal code'
-                                name='zip'
-                                autoComplete='zip'
-                                required
-                                fullWidth
-                                {...formik.getFieldProps('zip')}
-                                error={formik.touched.zip && formik.errors.zip}
-                                helperText={formik.touched.zip && formik.errors.zip}
-                            />
-                        </Grid>
+                        {id === 'professional' ?
+                            <>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        label='Company'
+                                        name='companyName'
+                                        autoComplete="companyName"
+                                        fullWidth
+                                        {...formik.getFieldProps('companyName')}
+                                        error={formik.touched.companyName && formik.errors.companyName}
+                                        helperText={formik.touched.companyName && formik.errors.companyName}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <FormControl className={classes.formControl}>
+                                        <InputLabel id="gender-select-helper-label">Gender</InputLabel>
+                                        <Select
+                                            labelId="gender-select-helper-label"
+                                            id="gender-select-helper"
+                                            name='gender'
+                                            {...formik.getFieldProps('gender')}
+                                            error={formik.touched.companyName && formik.errors.companyName}
+                                            helperText={formik.touched.companyName && formik.errors.companyName}
+                                        >
+                                            <MenuItem value={null}><em>None</em></MenuItem>
+                                            <MenuItem value={0}>Female</MenuItem>
+                                            <MenuItem value={1}>Male</MenuItem>
+                                            <MenuItem value={2}>I don't say</MenuItem>
+                                        </Select>
+                                        {/* <FormHelperText>Some important helper text</FormHelperText> */}
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        label='Capacity'
+                                        name='capacity'
+                                        autoComplete='capacity'
+                                        fullWidth
+                                        type='number'
+                                        {...formik.getFieldProps('capacity')}
+                                        error={formik.touched.capacity && formik.errors.capacity}
+                                        helperText={formik.touched.capacity && formik.errors.capacity}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        label='Zip / Postal code'
+                                        name='zip'
+                                        autoComplete='zip'
+                                        required
+                                        fullWidth
+                                        {...formik.getFieldProps('zip')}
+                                        error={formik.touched.zip && formik.errors.zip}
+                                        helperText={formik.touched.zip && formik.errors.zip}
+                                    />
+                                </Grid>
+                            </>
+                            : ''
+                        }
+
                         {/* phone number */}
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={12}>
                             <TextField
                                 label='Phone Number'
                                 name='phone'
@@ -318,19 +323,23 @@ const SignupDetail = () => {
                             />
                         </Grid>
                         {/* about me */}
-                        <Grid item xs={12} >
-                            <TextField
-                                label='About Me'
-                                name='aboutMe'
-                                autoComplete='aboutMe'
-                                multiline
-                                required
-                                fullWidth
-                                {...formik.getFieldProps('aboutMe')}
-                                error={formik.touched.aboutMe && formik.errors.aboutMe}
-                                helperText={formik.touched.aboutMe && formik.errors.aboutMe}
-                            />
-                        </Grid>
+                        {
+                            id === 'professional' ?
+                                <Grid item xs={12} >
+                                    <TextField
+                                        label='About Me'
+                                        name='aboutMe'
+                                        autoComplete='aboutMe'
+                                        multiline
+                                        required
+                                        fullWidth
+                                        {...formik.getFieldProps('aboutMe')}
+                                        error={formik.touched.aboutMe && formik.errors.aboutMe}
+                                        helperText={formik.touched.aboutMe && formik.errors.aboutMe}
+                                    />
+                                </Grid>
+                                : ''
+                        }
                         {/* detail */}
                         <Grid item xs={12}>
                             <Checkbox
