@@ -17,7 +17,6 @@ import {
     IconButton
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Request from '../helper/Request';
@@ -32,6 +31,8 @@ const useStyles = makeStyles((theme) => ({
     avatar: {
         margin: theme.spacing(1),
         backgroundColor: theme.palette.secondary.main,
+        width: theme.spacing(7),
+        height: theme.spacing(7),
     },
     form: {
         width: '100%', // Fix IE 11 issue.
@@ -93,9 +94,7 @@ const Signin = () => {
     return (
         <Container component='main' maxWidth='xs'>
             <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
+                <Avatar alt="Beauty Bank" src='../images/logo.jpg' className={classes.avatar} />
                 <Typography component='h1' variant='h5'>
                     Sign in
                 </Typography>
