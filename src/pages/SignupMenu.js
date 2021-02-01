@@ -27,14 +27,10 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor:
             theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[700],
     },
-    cardPricing: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'baseline',
-        marginBottom: theme.spacing(2),
-    },
     cardMedia: {
         paddingTop: '56.25%', // 16:9
+        height: theme.spacing(50),
+
     },
 }));
 
@@ -43,19 +39,19 @@ const items = [
         title: 'Client',
         price: '0',
         description: ['U kunt onder de verzekering van onze stichting terecht voor een goede service.'],
-        buttonText: 'Contact Us',
-        buttonVariant: 'contained',
+        buttonText: "That's me!",
+        buttonVariant: 'outlined',
         imageURL: '../images/client.jpg',
     },
     {
         title: 'Professional',
-        subheader: 'Most Popular',
+        // subheader: 'Most Popular',
         price: '15',
         description: [
             'Wil je je klanten niet imponeren met je talenten en ze een goede service bieden?',
         ],
-        buttonText: 'Contact Us',
-        buttonVariant: 'contained',
+        buttonText: "That's me!",
+        buttonVariant: 'outlined',
         imageURL: 'images/professional.jpg',
     },
     {
@@ -127,8 +123,8 @@ const SignupMenu = () => {
                                 <CardMedia
 
                                     className={classes.cardMedia}
-                                    image="https://source.unsplash.com/random"
-                                    title={JSON.stringify(item.imageURL)}
+                                    image={item.imageURL}
+                                    title={item.title}
                                 />
                                 <CardContent>
                                     <ul>
