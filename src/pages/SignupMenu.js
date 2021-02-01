@@ -42,9 +42,9 @@ const items = [
     {
         title: 'Client',
         price: '0',
-        description: ['Uiteraard kan De BeautyBank niet bestaan zonder de hulp van onze donateurs en sponsoren. We willen een grote groep mensen helpen en daarvoor zijn middelen nodig die het mogelijk maken de beautypartners en cliënten te bereiken en te verbinden.'],
-        buttonText: 'Sign up for free',
-        buttonVariant: 'outlined',
+        description: ['U kunt onder de verzekering van onze stichting terecht voor een goede service.'],
+        buttonText: 'Contact Us',
+        buttonVariant: 'contained',
         imageURL: '../images/client.jpg',
     },
     {
@@ -52,18 +52,18 @@ const items = [
         subheader: 'Most Popular',
         price: '15',
         description: [
-            'Uiteraard kan De BeautyBank niet bestaan zonder de hulp van onze donateurs en sponsoren. We willen een grote groep mensen helpen en daarvoor zijn middelen nodig die het mogelijk maken de beautypartners en cliënten te bereiken en te verbinden.',
+            'Wil je je klanten niet imponeren met je talenten en ze een goede service bieden?',
         ],
-        buttonText: 'Get started',
-        buttonVariant: 'outlined',
+        buttonText: 'Contact Us',
+        buttonVariant: 'contained',
         imageURL: 'images/professional.jpg',
     },
     {
-        title: 'Volunteer',
+        title: 'Connector',
         subheader: '',
         price: '30',
         description: [
-            'Uiteraard kan De BeautyBank niet bestaan zonder de hulp van onze donateurs en sponsoren. We willen een grote groep mensen helpen en daarvoor zijn middelen nodig die het mogelijk maken de beautypartners en cliënten te bereiken en te verbinden.',
+            'Als vrijwillig medewerker van onze stichting bouw je een brug tussen professionals en klanten.',
         ],
         buttonText: 'Contact us',
         buttonVariant: 'contained',
@@ -74,7 +74,7 @@ const items = [
         subheader: '',
         price: '30',
         description: [
-            'Uiteraard kan De BeautyBank niet bestaan zonder de hulp van onze donateurs en sponsoren. We willen een grote groep mensen helpen en daarvoor zijn middelen nodig die het mogelijk maken de beautypartners en cliënten te bereiken en te verbinden.',
+            'Wilt u als sponsor deelnemen om onze stichting te helpen een breder publiek te bereiken?',
         ],
         buttonText: 'Contact us',
         buttonVariant: 'contained',
@@ -110,7 +110,6 @@ const SignupMenu = () => {
 
     return (
         <>
-
             <Container maxWidth="lg" component="main">
                 <Grid container spacing={5} alignItems="flex-end" pt={3}>
                     {items.map((item) => (
