@@ -94,9 +94,9 @@ const Signin = () => {
     return (
         <Container component='main' maxWidth='xs'>
             <div className={classes.paper}>
-                <Avatar alt="Beauty Bank" src='../images/logo.jpg' className={classes.avatar} />
+                <img src='../images/logo.jpg' className={classes.avatar} />
                 <Typography component='h1' variant='h5'>
-                    Sign in
+                    Sign In
                 </Typography>
                 <form className={classes.form} noValidate onSubmit={formik.handleSubmit}>
                     <TextField

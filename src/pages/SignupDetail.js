@@ -137,7 +137,7 @@ const SignupDetail = () => {
     return (
         <main className={classes.layout}>
             <Paper className={classes.paper}>
-                <Avatar alt="Beauty Bank" src='../images/logo.jpg' className={classes.avatar} />
+                <img src='../images/logo.jpg' className={classes.avatar} />
                 <Typography component='h1' variant='h5'>
                     Register
                 </Typography>
