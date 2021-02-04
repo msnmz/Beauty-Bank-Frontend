@@ -9,7 +9,7 @@ import {
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Modal } from '../components/Index';
-// import Request from '../helper/Request';
+import Request from '../services/Request';
 
 const useStyles = makeStyles((theme) => ({
     layout: {
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SignupDetail = () => {
     const classes = useStyles();
-    // const history = useHistory();
+    const history = useHistory();
     const { id } = useParams();
 
     //states
@@ -100,17 +100,32 @@ const SignupDetail = () => {
             capacity: 0,
         })
     }
-    // alert(JSON.stringify(initialValues));
+
     // handleSubmit
     const onSubmit = (values) => {
-        // Request.getData('..............', values) //TODO: Don't forget path
-        //     .then(() => {
-        //         history.push('/login');
-        //     })
-        //     .catch(error => {
-        //         modalTrigger();
-        //     })
-        console.log(values);
+        const data = {
+            email: values.email,
+            username: values.username,
+            password: values.password,
+            first_name: values.firstName,
+            last_name: values.lastName,
+            phone_number: values.phoneNumber,
+            gdpr_consent: values.conditions,
+            ...(id === 'professional' && {
+                about_me: values.aboutMe,
+                company_name: values.companyName,
+                for_gender: values.gender,
+                reserved_capacity: values.capacity,
+                zip_address: values.zip
+            })
+        }
+        Request.postData('http://bbank-backend-app.herokuapp.com/auth/register', data) //TODO: Don't forget path
+            .then(() => {
+                alert('Basarili');
+            })
+            .catch(error => {
+                console.log(error.message);
+            })
     }
 
     // formik
@@ -132,7 +147,6 @@ const SignupDetail = () => {
     const modalTrigger = () => {
         setModal({ isOpen: !modal.isOpen, message: 'Successfully registered' })
     }
-
 
     return (
         <main className={classes.layout}>
