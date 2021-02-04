@@ -119,7 +119,7 @@ const SignupDetail = () => {
                 zip_address: values.zip
             })
         }
-        Request.postData('http://bbank-backend-app.herokuapp.com/auth/register', data) //TODO: Don't forget path
+        Request.postData('https://bbank-backend-app.herokuapp.com/auth/register', data) //TODO: Don't forget path
             .then(() => {
                 alert('Basarili');
             })
