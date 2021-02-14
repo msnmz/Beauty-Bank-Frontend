@@ -12,12 +12,7 @@ export default class Request {
     }
 
     static async postData(path, data) {
-        const token = localStorage.getItem('token');
-        const response = await axios.post(path, data, {
-            headers: {
-                token
-            }
-        });
+        const response = await axios.post(path, data);
         return response?.data;
     }
 }
