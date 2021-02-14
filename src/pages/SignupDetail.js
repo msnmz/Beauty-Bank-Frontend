@@ -4,12 +4,14 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-    Paper, Grid, Typography, Avatar, TextField, Checkbox, Button, Link, InputAdornment, IconButton, Select, MenuItem, FormControl, InputLabel,
+    Paper, Grid, Typography, TextField, Checkbox, Button, Link, 
+    InputAdornment, IconButton, Select, MenuItem, FormControl, InputLabel,
 } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Modal } from '../components/Index';
 import Request from '../services/Request';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
     layout: {
@@ -54,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SignupDetail = () => {
+    // constants
     const classes = useStyles();
     const history = useHistory();
     const { id } = useParams();
@@ -105,11 +108,11 @@ const SignupDetail = () => {
     const onSubmit = (values) => {
         const data = {
             email: values.email,
-            username: values.username,
+            username: values.userName,
             password: values.password,
             first_name: values.firstName,
             last_name: values.lastName,
-            phone_number: values.phoneNumber,
+            phone_number: values.phone,
             gdpr_consent: values.conditions,
             ...(id === 'professional' && {
                 about_me: values.aboutMe,
@@ -119,9 +122,9 @@ const SignupDetail = () => {
                 zip_address: values.zip
             })
         }
-        Request.postData('https://bbank-backend-app.herokuapp.com/auth/register', data) //TODO: Don't forget path
-            .then(() => {
-                alert('Basarili');
+        Request.postData('https://bbank-backend-app.herokuapp.com/auth/register/', data)
+            .then((response) => {
+                alert(response);
             })
             .catch(error => {
                 console.log(error.message);
