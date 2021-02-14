@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -19,7 +19,8 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import Request from '../helper/Request';
+import Request from '../services/Request';
+import { AppContext } from '../context/AppContext';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -47,6 +48,7 @@ const Signin = () => {
     // constants
     const classes = useStyles();
     const history = useHistory();
+    const { setUser } = useContext(AppContext);
 
     // states
     const [isShowPassword, setIsShowPassword] = useState(false);
@@ -65,10 +67,32 @@ const Signin = () => {
 
     // handleSubmit
     const onSubmit = values => {
-        alert(JSON.stringify(values));  //TODO: Don't forget deleting
-        Request.postData('............', values) //TODO: Don't forget path 
-            .then(() => {
-                history.push('/');
+        Request.postData('https://bbank-backend-app.herokuapp.com/auth/login/', values)
+            .then((response) => {
+                console.log(typeof (response.role));
+
+                setUser(response);
+                localStorage.setItem('user', JSON.stringify(response));
+
+                switch (response.role) {
+                    case 'Client':
+                        history.push('/client');
+                        break;
+                    case 'Connector':
+                        history.push('/connector');
+                        break;
+                    case 'Professional':
+                        history.push('/professional');
+                        break;
+                    case 'Sponsor':
+                        history.push('/sponsor');
+                        break;
+                    case 'Admin':
+                        history.push('/admin');
+                        break;
+                    default:
+                        history.push('/login');
+                }
             })
             .catch(error => {
                 toast(error.message || 'An error occured');
