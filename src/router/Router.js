@@ -10,6 +10,7 @@ import {
     DashboardConnector,
     DashboardProfessional,
     DashboardSponsor,
+    ClientTicket,
 } from '../pages/Index';
 import { Footer } from '../components/Index';
 import { AppContext } from '../context/AppContext';
@@ -30,6 +31,7 @@ const AppRouter = () => {
                 <Route exact path='/connector' component={user?.role === 'Connector' ? DashboardConnector : Signin} />
                 <Route exact path='/professional' component={user?.role === 'Professional' ? DashboardProfessional : Signin} />
                 <Route exact path='/sponsor' component={user?.role === 'Professional' ? DashboardSponsor : Signin} />
+                <Route exact path='/create-ticket' component={ClientTicket} />
             </Switch>
             <Footer />
         </Router>
