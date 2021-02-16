@@ -1,13 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Grid, makeStyles } from "@material-ui/core";
 import { Layout } from "../components/Index";
-import clsx from "clsx";
 
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { AppContext } from "../context/AppContext";
@@ -21,8 +16,15 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import Modal from "@material-ui/core/Modal";
+import { EditProfile } from "../components/Index";
+
 
 const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    display: "flex",
+    flexDirection: "column",
+  },
   root: {
     maxWidth: 345,
     display: "flex",
@@ -40,7 +42,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     overflow: "auto",
     flexDirection: "column",
-    width: 1000,
+    width: 1200,
+    textAlign: "center",
   },
   fixedHeight: {
     height: 240,
@@ -48,23 +51,55 @@ const useStyles = makeStyles((theme) => ({
   large: {
     width: theme.spacing(30),
     height: theme.spacing(30),
+    marginLeft: theme.spacing(10),
   },
   about: {
     width: theme.spacing(60),
     height: theme.spacing(40),
-    marginLeft: theme.spacing(30),
+    textAlign: "left",
+  },
+  button: {
+    textAlign: "right",
+    margin: theme.spacing(2),
   },
   table: {
-    width: 960,
-    minWidth: 650,
+    margin: theme.spacing(10),
+    width: 1000,
+  },
+  paperModal: {
+    position: "absolute",
+    top: "20vh",
+    left: "35vw",
+    width: 700,
+    height: 500,
+    backgroundColor: theme.palette.background.paper,
+    border: "2px solid #000",
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
   },
 }));
 
 const ProfileClient = () => {
   const classes = useStyles();
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-  const { user, setUser } = useContext(AppContext);
+  const { user, setUser, userProfile, setUserProfile } = useContext(AppContext);
   const [userData, setUserData] = useState([]);
+
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const modalBody = (
+    <div className={classes.paperModal}>
+      <h1 id="simple-modal-title">Edit Profile</h1>
+      <EditProfile />
+    </div>
+  );
 
   useEffect(async () => {
     const requestOptions = {
@@ -84,18 +119,39 @@ const ProfileClient = () => {
     setUserData(data);
   }, []);
 
-  console.log(userData);
+  setUserProfile(userData);
 
   return (
     <Layout pageTitle="Profile">
-      <div>
-        <div className={classes.root}>
-          <Avatar
-            alt={userData?.email}
-            src={userData?.profile_image}
-            className={classes.large}
-          />
-          <div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {modalBody}
+      </Modal>
+      <Paper className={classes.paper}>
+        <div className={classes.button}>
+          <Button
+            onClick={handleOpen}
+            variant="outlined"
+            color="secondary"
+            value="Edit Profile"
+            // size="small"
+          >
+            Edit Profile
+          </Button>
+        </div>
+        <Grid container spacing={3}>
+          <Grid item xs={6}>
+            <Avatar
+              alt={userData?.email}
+              src={userData?.profile_image}
+              className={classes.large}
+            />
+          </Grid>
+          <Grid item xs={6}>
             <CardContent className={classes.about}>
               <Typography gutterBottom variant="h5" component="h2">
                 About me:
@@ -104,69 +160,62 @@ const ProfileClient = () => {
                 {userData?.about_me}
               </Typography>
             </CardContent>
-          </div>
-        </div>
-
-        <div className={classes.info}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <TableContainer>
-                  <Table className={classes.table} aria-label="a dense table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>{`${
-                          user?.username.charAt(0).toUpperCase() +
-                          user?.username.slice(1)
-                        }'s Profile`}</TableCell>
-                        <TableCell align="right"></TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell>Last Login</TableCell>
-                        <TableCell align="right">{userData?.last_login}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Email</TableCell>
-                        <TableCell align="left">{userData?.email}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>First Name</TableCell>
-                        <TableCell align="left">{userData?.first_name}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Last Name</TableCell>
-                        <TableCell align="left">{userData?.last_name}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Birth Date</TableCell>
-                        <TableCell align="left">{userData?.birth_date}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Gender</TableCell>
-                        <TableCell align="left">{userData?.gender}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Address</TableCell>
-                        <TableCell align="left">{userData?.address}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Zip Code</TableCell>
-                        <TableCell align="left">{userData?.zip_address}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Phone Number</TableCell>
-                        <TableCell align="left">{userData?.phone_number}</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Paper>
-            </Grid>
           </Grid>
-        </div>
-      </div>
+          <Grid item xs={12}>
+            <TableContainer>
+              <Table
+                className={classes.table}
+                aria-label="a dense table"
+                size="small"
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell>{`${
+                      user?.username.charAt(0).toUpperCase() +
+                      user?.username.slice(1)
+                    }'s Profile`}</TableCell>
+                    <TableCell align="right"></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Email</TableCell>
+                    <TableCell align="left">{userData?.email}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>First Name</TableCell>
+                    <TableCell align="left">{userData?.first_name}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Last Name</TableCell>
+                    <TableCell align="left">{userData?.last_name}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Birth Date</TableCell>
+                    <TableCell align="left">{userData?.birth_date}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Gender</TableCell>
+                    <TableCell align="left">{userData?.gender}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Address</TableCell>
+                    <TableCell align="left">{userData?.address}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Zip Code</TableCell>
+                    <TableCell align="left">{userData?.zip_address}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Phone Number</TableCell>
+                    <TableCell align="left">{userData?.phone_number}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+        </Grid>
+      </Paper>
     </Layout>
   );
 };
