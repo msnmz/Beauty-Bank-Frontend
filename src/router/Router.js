@@ -25,7 +25,7 @@ const AppRouter = () => {
     return (
         <Router>
             <Switch>
-                <Route exact path='' component={SignupMenu} />
+                <Route exact path='/register' component={SignupMenu} />
                 <Route exact path='/register/:id' component={SignupDetail} />
                 <Route exact path='/login' component={Signin} />
                 <Route exact path='/admin' component={DashboardAdmin} />
