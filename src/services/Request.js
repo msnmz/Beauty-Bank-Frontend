@@ -15,5 +15,10 @@ export default class Request {
         const response = await axios.post(path, data);
         return response?.data;
     }
+
+    static async putData(path, data) {
+        const response = await axios.put(path, data);
+        return response?.data;
+    }
 }
 
