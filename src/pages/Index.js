@@ -10,3 +10,5 @@ export * from './DashboardSponsor';
 // export * from './CreateTicket';
 export * from './ProfileClient';
 export * from './EmailVerify';
+export * from './ClientTicket';
+// export * from './CreateTicket';
