@@ -24,16 +24,16 @@ const DashboardClient = () => {
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
     return (
-        <Layout>
+        <Layout pageTitle='Dashboard'>
             <Grid container spacing={3}>
                 {/* Stepper */}
                 <Grid item xs={12}>
                     <Paper className={fixedHeightPaper}>
                         <Steps />
                     </Paper>
-                    <Paper className={fixedHeightPaper}>
+                    {/* <Paper className={fixedHeightPaper}>
                         <Steps />
-                    </Paper>
+                    </Paper> */}
                 </Grid>
 
                 {/* Recent Orders */}
