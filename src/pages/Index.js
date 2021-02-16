@@ -7,4 +7,5 @@ export * from './DashboardAdmin';
 export * from './DashboardConnector';
 export * from './DashboardProfessional';
 export * from './DashboardSponsor';
+export * from './ClientTicket';
 // export * from './CreateTicket';
