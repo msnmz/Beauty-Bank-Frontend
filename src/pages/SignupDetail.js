@@ -123,8 +123,9 @@ const SignupDetail = () => {
             })
         }
         Request.postData('https://bbank-backend-app.herokuapp.com/auth/register/', data)
+            .then(() => alert("Successfull! You have been registered! Please activate your email!") )
             .then((response) => {
-                alert(response);
+                // alert(response);
             })
             .catch(error => {
                 console.log(error.message);

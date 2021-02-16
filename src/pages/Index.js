@@ -8,3 +8,5 @@ export * from './DashboardConnector';
 export * from './DashboardProfessional';
 export * from './DashboardSponsor';
 // export * from './CreateTicket';
+export * from './ProfileClient';
+export * from './EmailVerify';

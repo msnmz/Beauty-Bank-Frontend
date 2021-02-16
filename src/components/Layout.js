@@ -96,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Layout = ({ children }) => {
+const Layout = ({ children, pageTitle }) => {
 
     // constants
     const classes = useStyles();
@@ -106,7 +106,7 @@ const Layout = ({ children }) => {
     // states
     const [open, setOpen] = useState(true);
 
-    console.log(user);
+    // console.log(user);
 
     // Side Menu Functions
     const handleDrawerOpen = () => {
@@ -142,7 +142,7 @@ const Layout = ({ children }) => {
                         <MenuIcon />
                     </IconButton>
                     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                        Client Dashboard
+                    {`${user?.username.charAt(0).toUpperCase() + user?.username.slice(1)}'s ${pageTitle}`}
                     </Typography>
                     <IconButton color='inherit'>
                         <AccountBoxIcon />
@@ -189,12 +189,12 @@ const Layout = ({ children }) => {
                             </ListItemIcon>
                             <ListItemText primary="Create Ticket" />
                         </ListItem>
-                        <ListItem button onClick={() => history.push('/all-tickets')}>
+                        {/* <ListItem button onClick={() => history.push('/all-tickets')}>
                             <ListItemIcon>
                                 <BookIcon color="primary" />
                             </ListItemIcon>
                             <ListItemText primary="My Tickets" />
-                        </ListItem>
+                        </ListItem> */}
                     </div>
                 </List>
             </Drawer>
