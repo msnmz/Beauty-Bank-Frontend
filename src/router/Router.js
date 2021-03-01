@@ -12,7 +12,9 @@ import {
     DashboardSponsor,
     EmailVerify,
     ProfileClient,
-    ClientTicket,
+    CreateTicket,
+    ProfileConnector,
+    ConnectorUserList,
 } from '../pages/Index';
 import { Footer } from '../components/Index';
 import { AppContext } from '../context/AppContext';
@@ -32,9 +34,11 @@ const AppRouter = () => {
                 <Route exact path='/client' component={user?.role === 'Client' ? DashboardClient : Signin} />
                 <Route exact path='/client-profile' component={user?.role === 'Client' ? ProfileClient : Signin} />
                 <Route exact path='/connector' component={user?.role === 'Connector' ? DashboardConnector : Signin} />
+                <Route exact path='/connector-profile' component={user?.role === 'Connector' ? ProfileConnector : Signin} />
+                <Route exact path='/connector-user-list' component={user?.role === 'Connector' ? ConnectorUserList : Signin} />
                 <Route exact path='/professional' component={user?.role === 'Professional' ? DashboardProfessional : Signin} />
                 <Route exact path='/sponsor' component={user?.role === 'Professional' ? DashboardSponsor : Signin} />
-                <Route exact path='/create-ticket' component={ClientTicket} />
+                <Route exact path='/create-ticket' component={user?.role === 'Client' ? CreateTicket : Signin} />
                 <Route path='/email-verify/:token' component={EmailVerify} />
             </Switch>
             <Footer />
