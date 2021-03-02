@@ -11,6 +11,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 
+import Button from "@material-ui/core/Button";
+import { useHistory } from "react-router-dom";
+import Modal from "@material-ui/core/Modal";
+import { ConfirmTicketModal } from '../components/Index'
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
@@ -23,15 +28,30 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
+  paperModal: {
+    position: "absolute",
+    top: "20vh",
+    left: "35vw",
+    width: 700,
+    height: 300,
+    backgroundColor: theme.palette.background.paper,
+    border: "2px solid #000",
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
 }));
 
 const DashboardClient = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const history = useHistory();
 
   const { user, setUser, userProfile, setUserProfile } = useContext(AppContext);
 
   const [ticketsData, setTicketsData] = useState([]);
+
+  const [open, setOpen] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState([]);
 
   useEffect(async () => {
     const requestOptions = {
@@ -53,9 +73,35 @@ const DashboardClient = () => {
     });
     setTicketsData(filteredData);
   }, []);
+  
+
+  const handleOpen = (ticket) => {
+    setOpen(true);
+    setSelectedTicket(ticket);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+
+  const modalBody = (
+    <div className={classes.paperModal}>
+      <h1 id="simple-modal-title">Confirm Ticket</h1>
+      <ConfirmTicketModal selectedTicket={selectedTicket} handleClose={handleClose}/>
+    </div>
+  );
 
   return (
     <LayoutClient pageTitle="Dashboard">
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {modalBody}
+      </Modal>
       <Grid container spacing={3}>
         {/* Stepper */}
         <Grid item xs={12}>
@@ -83,6 +129,7 @@ const DashboardClient = () => {
                   <TableCell>Create Date</TableCell>
                   <TableCell>Service Type</TableCell>
                   <TableCell>Phone Number</TableCell>
+                  <TableCell>Confirm</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -93,6 +140,17 @@ const DashboardClient = () => {
                     <TableCell>{ticket.created_at}</TableCell>
                     <TableCell>{ticket.service_type}</TableCell>
                     <TableCell>{ticket.phone_number}</TableCell>
+                    <TableCell>
+                      <Button
+                        onClick={() => {ticket?.is_client_confirm ? alert('Already Confirmed!') : handleOpen(ticket)}}
+                        variant="outlined"
+                        color={ticket?.is_client_confirm ? "primary" : "secondary"}
+                        disabled={ticket?.appointment_date == null ? true : false}
+                        value="Confirm"
+                      >
+                        {ticket?.is_client_confirm ? 'Confirmed' : 'Confirm'}
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
