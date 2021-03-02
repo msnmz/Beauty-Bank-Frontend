@@ -1,212 +1,161 @@
-import React from 'react';
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import Box from '@material-ui/core/Box';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Link from '@material-ui/core/Link';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import PostAddIcon from '@material-ui/icons/PostAdd';
-import BookIcon from '@material-ui/icons/Book';
-import { TicketTable } from '../components/Index';
-import { Steps } from '../components/Index';
+import React, { useState, useEffect, useContext } from "react";
+import clsx from "clsx";
+import { makeStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import { Steps } from "../components/Index";
+import { AppContext } from "../context/AppContext";
+import { LayoutConnector } from "../components/LayoutConnector";
 
-const drawerWidth = 240;
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Typography from "@material-ui/core/Typography";
+
+import Button from "@material-ui/core/Button";
+import Modal from "@material-ui/core/Modal";
+import { OrganizeTicket } from '../components/Index'
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        display: 'flex',
-    },
-    toolbar: {
-        paddingRight: 24, // keep right padding when drawer closed
-    },
-    toolbarIcon: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        padding: '0 8px',
-        ...theme.mixins.toolbar,
-    },
-    appBar: {
-        zIndex: theme.zIndex.drawer + 1,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-    },
-    appBarShift: {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    },
-    menuButton: {
-        marginRight: 36,
-    },
-    menuButtonHidden: {
-        display: 'none',
-    },
-    title: {
-        flexGrow: 1,
-    },
-    drawerPaper: {
-        position: 'relative',
-        whiteSpace: 'nowrap',
-        width: drawerWidth,
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    },
-    drawerPaperClose: {
-        overflowX: 'hidden',
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-            width: theme.spacing(9),
-        },
-    },
-    appBarSpacer: theme.mixins.toolbar,
-    content: {
-        flexGrow: 1,
-        height: '100vh',
-        overflow: 'auto',
-    },
-    container: {
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
-    },
-    paper: {
-        padding: theme.spacing(2),
-        display: 'flex',
-        overflow: 'auto',
-        flexDirection: 'column',
-    },
-    fixedHeight: {
-        height: 240,
-    },
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: theme.spacing(10),
+  },
+  fixedHeight: {
+    height: 240,
+  },
+  paperModal: {
+    position: "absolute",
+    top: "20vh",
+    left: "35vw",
+    width: 700,
+    height: 700,
+    backgroundColor: theme.palette.background.paper,
+    border: "2px solid #000",
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
 }));
 
 const DashboardConnector = () => {
-    const classes = useStyles();
-    const [open, setOpen] = React.useState(true);
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
-    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const classes = useStyles();
 
-    return (
-        <div className={classes.root}>
-            <CssBaseline />
-            <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
-                <Toolbar className={classes.toolbar}>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                        Connector Dashboard
-                    </Typography>
-                    <IconButton color="inherit">
-                        <Badge badgeContent={4} color="secondary">
-                            <NotificationsIcon />
-                        </Badge>
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                variant="permanent"
-                classes={{
-                    paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-                }}
-                open={open}
-            >
-                <div className={classes.toolbarIcon}>
-                    <IconButton onClick={handleDrawerClose}>
-                        <ChevronLeftIcon />
-                    </IconButton>
-                </div>
-                <Divider />
-                <List>
-                    <div>
-                        <ListItem button>
-                            <ListItemIcon>
-                                <DashboardIcon color="primary" />
-                            </ListItemIcon>
-                            <ListItemText primary="Dashboard" />
-                        </ListItem>
-                        <ListItem button>
-                            <ListItemIcon>
-                                <AccountCircle color="primary" />
-                            </ListItemIcon>
-                            <ListItemText primary="Profile" />
-                        </ListItem>
-                        <ListItem button>
-                            <ListItemIcon>
-                                <PostAddIcon color="primary" />
-                            </ListItemIcon>
-                            <ListItemText primary="Create Ticket" />
-                        </ListItem>
-                        <ListItem button>
-                            <ListItemIcon>
-                                <BookIcon color="primary" />
-                            </ListItemIcon>
-                            <ListItemText primary="My Tickets" />
-                        </ListItem>
-                    </div>
-                </List>
-            </Drawer>
-            <main className={classes.content}>
-                <div className={classes.appBarSpacer} />
-                <Container maxWidth="lg" className={classes.container}>
-                    <Grid container spacing={3}>
-                        {/* Stepper */}
-                        <Grid item xs={12}>
-                            <Paper className={fixedHeightPaper}>
-                                <Steps />
-                            </Paper>
-                        </Grid>
-                        {/* Recent Orders */}
-                        <Grid item xs={12}>
-                            <Paper className={classes.paper}>
-                                <TicketTable />
-                            </Paper>
-                        </Grid>
-                    </Grid>
-                </Container>
-            </main>
-        </div>
+  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+  const { user, setUser, userProfile, setUserProfile } = useContext(AppContext);
+  const [ticketsData, setTicketsData] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState([]);
+
+  useEffect(async () => {
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.tokens?.access}`,
+      },
+    };
+
+    const response = await fetch(
+      `https://bbank-backend-app.herokuapp.com/ticket/ticket-list/`,
+      requestOptions
     );
-}
+    const data = await response.json();
+
+    setTicketsData(data);
+  }, [open]);
+
+
+  const handleOpen = (ticket) => {
+    setOpen(true);
+    setSelectedTicket(ticket);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const modalBody = (
+    <div className={classes.paperModal}>
+      <h1 id="simple-modal-title">Organize Ticket</h1>
+      <OrganizeTicket selectedTicket={selectedTicket} handleClose={handleClose}/>
+    </div>
+  );
+
+  return (
+    <LayoutConnector pageTitle="Dashboard">
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {modalBody}
+      </Modal>
+      <Grid container spacing={3}>
+        {/* Stepper */}
+        <Grid item xs={12}>
+          <Paper className={fixedHeightPaper}>
+            <Steps />
+          </Paper>
+        </Grid>
+        {/* Recent Orders */}
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>
+            <Typography
+              component="h2"
+              variant="h6"
+              color="secondary"
+              gutterBottom
+            >
+              All Tickets
+            </Typography>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Ticket ID</TableCell>
+                  <TableCell>Owner</TableCell>
+                  <TableCell>Create Date</TableCell>
+                  <TableCell>Service Type</TableCell>
+                  <TableCell>Phone Number</TableCell>
+                  <TableCell>Choose</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {ticketsData?.map((ticket) => (
+                  <TableRow key={ticket.id}>
+                    <TableCell>{ticket.id}</TableCell>
+                    <TableCell>{ticket.owner.username}</TableCell>
+                    <TableCell>{ticket.created_at}</TableCell>
+                    <TableCell>{ticket.service_type}</TableCell>
+                    <TableCell>{ticket.phone_number}</TableCell>
+                    <TableCell>
+                      <Button
+                        onClick={() => {handleOpen(ticket)}}
+                        variant="outlined"
+                        color={ticket?.appointment_date != null ? "primary" : "secondary"}
+                        value="Choose"
+                      >
+                        {ticket?.appointment_date != null ? "Done" : "Choose"}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Paper>
+        </Grid>
+      </Grid>
+    </LayoutConnector>
+  );
+};
 
 export { DashboardConnector };

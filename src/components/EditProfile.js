@@ -89,6 +89,11 @@ const EditProfile = () => {
       .required("This field is required")
       .min(1, "Must be at least 1 characters")
       .max(30, "Must be a maximum of 30 characters"),
+      address: yup
+      .string()
+      .required("This field is required")
+      .min(1, "Must be at least 1 characters")
+      .max(100, "Must be a maximum of 30 characters"),
     aboutMe: yup
       .string()
       .required("This field is required")
@@ -103,7 +108,9 @@ const EditProfile = () => {
     userName: userProfile?.username,
     email: userProfile?.email,
     phone: userProfile?.phone_number,
+    phone2: userProfile?.phone_number2,
     zipAddress: userProfile?.zip_address,
+    address: userProfile?.address,
     aboutMe: userProfile?.about_me,
   };
 
@@ -121,7 +128,9 @@ const EditProfile = () => {
         first_name: values.firstName,
         last_name: values.lastName,
         phone_number: values.phone,
+        phone_number2: values.phone2,
         zip_address: values.zipAddress,
+        address: values.address,
         about_me: values.aboutMe,
       }),
     };
@@ -131,7 +140,13 @@ const EditProfile = () => {
       requestOptions
     );
     const data = await response.json();
-    history.push("/client");
+    if(user?.role=='Client'){
+      history.push("/client");
+    } else if (user?.role=='Connector'){
+      history.push("/connector");
+    } else {
+      history.push("/login");
+    }
   }
 
   // formik
@@ -216,6 +231,17 @@ const EditProfile = () => {
                 helperText={formik.touched.phone && formik.errors.phone}
               />
             </Grid>
+             {/* phone number 2 */}
+             <Grid item xs={12} sm={6}>
+              <TextField
+                label="Phone Number 2"
+                name="phone2"
+                autoComplete="phone2"
+                required
+                fullWidth
+                {...formik.getFieldProps("phone2")}
+              />
+            </Grid>
             {/* zipaddress */}
             <Grid item xs={12} sm={6}>
               <TextField
@@ -228,6 +254,21 @@ const EditProfile = () => {
                 error={formik.touched.zipAddress && formik.errors.zipAddress}
                 helperText={
                   formik.touched.zipAddress && formik.errors.zipAddress
+                }
+              />
+            </Grid>
+            {/* address */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Address"
+                name="address"
+                autoComplete="address"
+                required
+                fullWidth
+                {...formik.getFieldProps("address")}
+                error={formik.touched.address && formik.errors.address}
+                helperText={
+                  formik.touched.address && formik.errors.address
                 }
               />
             </Grid>

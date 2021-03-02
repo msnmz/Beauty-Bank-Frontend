@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Grid, makeStyles } from "@material-ui/core";
-import { LayoutClient } from "../components/Index";
+import { LayoutConnector } from "../components/Index";
 
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
@@ -79,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProfileClient = () => {
+const ProfileConnector = () => {
   const classes = useStyles();
   const { user, setUser, userProfile, setUserProfile } = useContext(AppContext);
   const [userData, setUserData] = useState([]);
@@ -122,7 +122,7 @@ const ProfileClient = () => {
   setUserProfile(userData);
 
   return (
-    <LayoutClient pageTitle="Profile">
+    <LayoutConnector pageTitle="Profile">
       <Modal
         open={open}
         onClose={handleClose}
@@ -216,8 +216,8 @@ const ProfileClient = () => {
           </Grid>
         </Grid>
       </Paper>
-    </LayoutClient>
+    </LayoutConnector>
   );
 };
 
-export { ProfileClient };
+export { ProfileConnector };

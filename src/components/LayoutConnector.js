@@ -22,6 +22,7 @@ import PostAddIcon from '@material-ui/icons/PostAdd';
 import BookIcon from '@material-ui/icons/Book';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import { AppContext } from '../context/AppContext';
 
 const drawerWidth = 240;
@@ -93,10 +94,11 @@ const useStyles = makeStyles((theme) => ({
     container: {
         paddingTop: theme.spacing(4),
         paddingBottom: theme.spacing(4),
+        overflow: 'hidden',
     },
 }));
 
-const Layout = ({ children, pageTitle }) => {
+const LayoutConnector = ({ children, pageTitle }) => {
 
     // constants
     const classes = useStyles();
@@ -105,8 +107,6 @@ const Layout = ({ children, pageTitle }) => {
 
     // states
     const [open, setOpen] = useState(true);
-
-    // console.log(user);
 
     // Side Menu Functions
     const handleDrawerOpen = () => {
@@ -171,30 +171,24 @@ const Layout = ({ children, pageTitle }) => {
                 <Divider />
                 <List>
                     <div>
-                        <ListItem button onClick={() => history.push('/client')}>
+                        <ListItem button onClick={() => history.push('/connector')}>
                             <ListItemIcon>
                                 <DashboardIcon color="primary" />
                             </ListItemIcon>
                             <ListItemText primary="Dashboard" />
                         </ListItem>
-                        <ListItem button onClick={() => history.push('/client-profile')}>
+                        <ListItem button onClick={() => history.push('/connector-profile')}>
                             <ListItemIcon>
                                 <AccountCircle color="primary" />
                             </ListItemIcon>
                             <ListItemText primary="Profile" />
                         </ListItem>
-                        <ListItem button onClick={() => history.push('/create-ticket')}>
+                        <ListItem button onClick={() => history.push('/connector-user-list')}>
                             <ListItemIcon>
-                                <PostAddIcon color="primary" />
+                                <PeopleAltIcon color="primary" />
                             </ListItemIcon>
-                            <ListItemText primary="Create Ticket" />
+                            <ListItemText primary="User List" />
                         </ListItem>
-                        {/* <ListItem button onClick={() => history.push('/all-tickets')}>
-                            <ListItemIcon>
-                                <BookIcon color="primary" />
-                            </ListItemIcon>
-                            <ListItemText primary="My Tickets" />
-                        </ListItem> */}
                     </div>
                 </List>
             </Drawer>
@@ -210,4 +204,4 @@ const Layout = ({ children, pageTitle }) => {
     );
 }
 
-export { Layout };
+export { LayoutConnector };

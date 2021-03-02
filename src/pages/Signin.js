@@ -70,6 +70,7 @@ const Signin = () => {
         Request.postData('https://bbank-backend-app.herokuapp.com/auth/login/', values)
             .then((response) => {
                 console.log(typeof (response.role));
+                console.log(response.role);
 
                 setUser(response);
                 localStorage.setItem('user', JSON.stringify(response));
