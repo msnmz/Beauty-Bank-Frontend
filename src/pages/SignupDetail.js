@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -65,6 +65,22 @@ const SignupDetail = () => {
     const [isShowPassword, setIsShowPassword] = useState(false);
     const [modal, setModal] = useState({ isOpen: false, message: '' });
 
+
+    const [detailPath, setDetailPath] = useState('');
+
+    useEffect(() => {
+        if (id === 'client'){
+            setDetailPath('register');
+        } else if (id === 'professional') {
+            setDetailPath('register-professional');
+        } else if (id === 'connector') {
+            setDetailPath('register-connector');
+        } else if (id === 'sponsor') {
+            setDetailPath('register-sponsor');
+        }
+    }, []);
+
+
     // validation obj
     const validationSchema = yup.object().shape({
         firstName: yup.string().required('This field is required').min(1, 'Must be at least 1 characters').max(30, 'Must be a maximum of 30 characters'),
@@ -122,7 +138,7 @@ const SignupDetail = () => {
                 zip_address: values.zip
             })
         }
-        Request.postData('https://bbank-backend-app.herokuapp.com/auth/register/', data)
+        Request.postData(`https://bbank-backend-app.herokuapp.com/auth/${detailPath}/`, data)
             .then(() => alert("Successfull! You have been registered! Please activate your email!") )
             .then((response) => {
                 // alert(response);
