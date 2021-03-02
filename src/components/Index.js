@@ -6,3 +6,4 @@ export * from './LayoutClient';
 export * from './LayoutConnector';
 export * from './EditProfile';
 export * from './OrganizeTicket';
+export * from './ConfirmTicketModal';
