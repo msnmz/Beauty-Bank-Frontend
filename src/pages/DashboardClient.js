@@ -48,6 +48,8 @@ const DashboardClient = () => {
 
   const { user, setUser, userProfile, setUserProfile } = useContext(AppContext);
 
+  console.log('CLIENT USER:', user);
+
   const [ticketsData, setTicketsData] = useState([]);
 
   const [open, setOpen] = useState(false);

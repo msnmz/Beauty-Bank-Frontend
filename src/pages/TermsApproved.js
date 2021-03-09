@@ -54,8 +54,10 @@ const TermsApproved = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user?.tokens?.access}`,
       },
-      body: JSON.stringify({ id: `${id}` }),
+      body: JSON.stringify({ "id": `${id}` }),
     };
+
+    console.log('REQUEST OPTIONS: ', requestOptions);
 
     const response = await fetch(
       `https://bbank-backend-app.herokuapp.com/ticket/terms_approved/`,
