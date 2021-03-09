@@ -13,3 +13,4 @@ export * from './CreateTicket';
 export * from './ProfileConnector';
 export * from './ConnectorUserList';
 export * from './ConfirmTicket';
+export * from './TermsApproved';
