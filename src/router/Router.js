@@ -16,6 +16,7 @@ import {
     ProfileConnector,
     ConnectorUserList,
     ConfirmTicket,
+    TermsApproved,
 } from '../pages/Index';
 import { Footer } from '../components/Index';
 import { AppContext } from '../context/AppContext';
@@ -42,6 +43,7 @@ const AppRouter = () => {
                 <Route exact path='/create-ticket' component={user?.role === 'Client' ? CreateTicket : Signin} />
                 <Route path='/email-verify/:token' component={EmailVerify} />
                 <Route path='/ticket/confirm/:id' component={ConfirmTicket} />
+                <Route path='/terms_approved/:id' component={TermsApproved} />
             </Switch>
             <Footer />
         </Router>

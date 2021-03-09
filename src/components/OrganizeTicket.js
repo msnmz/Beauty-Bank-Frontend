@@ -88,6 +88,8 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
   const { user, setUser, userProfile, setUserProfile } = useContext(AppContext);
   const [userData, setUserData] = useState([]);
 
+  console.log("USER:", user);
+
   useEffect(async () => {
     const requestOptions = {
       method: "GET",
@@ -145,9 +147,7 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
 
   async function onSubmit(values) {
     const data = {
-      pro: selectPro,
-      owner: selectedTicket?.owner.id,
-      //   connector: selectConnector,
+      service_type: sendingServiceType,
       appointment_date: datePicker,
     };
 
@@ -161,9 +161,11 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
     };
 
     const response = await fetch(
-      `https://bbank-backend-app.herokuapp.com/ticket/connector-tickets/${selectedTicket.id}`,
+      `https://bbank-backend-app.herokuapp.com/ticket/client-tickets/${selectedTicket.id}`,
       requestOptions
     );
+
+    console.log('RESPONSE:', response);
 
     handleClose();
   }
@@ -174,12 +176,28 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
     onSubmit,
   });
 
-  const [selectPro, setSelectPro] = useState("");
+  const [serviceType, setServiceType] = useState(selectedTicket?.service_type);
+  const [sendingServiceType, setSendingServiceType] = useState(0);
   const [selectConnector, setSelectConnector] = useState("");
   const [datePicker, setDatePicker] = useState("");
 
-  const handleChangePro = (event) => {
-    setSelectPro(event.target.value);
+  const handleChangeServiceType = (event) => {
+    setServiceType(event.target.value);
+    if(serviceType=="kapper"){
+      setSendingServiceType(0);
+    } else if (serviceType=="schoonheidsspecialiste") {
+      setSendingServiceType(1)
+    } else if (serviceType=="pedicure") {
+      setSendingServiceType(2)
+    } else if (serviceType=="visagist") {
+      setSendingServiceType(3)
+    } else if (serviceType=="styliste") {
+      setSendingServiceType(4)
+    } else if (serviceType=="nagelstyliste") {
+      setSendingServiceType(5)
+    } else if (serviceType=="haarwerken") {
+      setSendingServiceType(6)
+    }
   };
 
   const handleChangeConnector = (event) => {
@@ -189,6 +207,10 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
   const handleDatePicker = (event) => {
     setDatePicker(event.target.value);
   };
+
+  // console.log('SELECTED TICKET:', selectedTicket);
+  // console.log('SERVICE TYPE:', serviceType);
+  console.log('SERVICE TYPE:', sendingServiceType);
 
   return (
     <main className={classes.layout}>
@@ -270,18 +292,22 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
                     className={classes.formControl}
                   >
                     <InputLabel id="demo-simple-select-outlined-label">
-                      Select Pro
+                      Service Type
                     </InputLabel>
                     <Select
                       labelId="demo-simple-select-outlined-label"
                       id="demo-simple-select-outlined"
-                      value={selectPro}
-                      onChange={handleChangePro}
+                      value={serviceType}
+                      onChange={handleChangeServiceType}
                       label="Select Pro"
                     >
-                      {proList?.map((pro) => (
-                        <MenuItem value={pro?.id}>{pro?.email}</MenuItem>
-                      ))}
+                      <MenuItem value={"kapper"}>Kapper</MenuItem>
+                      <MenuItem value={"schoonheidsspecialiste"}>Schoonheidsspecialiste</MenuItem>
+                      <MenuItem value={"pedicure"}>Pedicure</MenuItem>
+                      <MenuItem value={"visagist"}>Visagist</MenuItem>
+                      <MenuItem value={"styliste"}>Styliste</MenuItem>
+                      <MenuItem value={"nagelstyliste"}>Nagelstyliste</MenuItem>
+                      <MenuItem value={"haarwerken"}>Haarwerken</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
