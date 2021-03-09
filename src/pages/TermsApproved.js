@@ -40,24 +40,20 @@ const TermsApproved = () => {
   const params = useParams();
   const [isVerified, setVerified] = useState(false);
   const history = useHistory();
-  const { user, setUser, userProfile, setUserProfile } = useContext(AppContext);
-
-  console.log('USER:', user);
-  console.log('USER ACCESS TOKEN:', user?.tokens?.access);
+  const { user } = useContext(AppContext);
 
   useEffect(async () => {
     const id = params.id;
+    const userAccessToken = user?.tokens?.access;
 
     const requestOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${user?.tokens?.access}`,
+        Authorization: `Bearer ${userAccessToken}`,
       },
       body: JSON.stringify({ "id": `${id}` }),
     };
-
-    console.log('REQUEST OPTIONS: ', requestOptions);
 
     const response = await fetch(
       `https://bbank-backend-app.herokuapp.com/ticket/terms_approved/`,
@@ -65,12 +61,10 @@ const TermsApproved = () => {
     );
     const data = await response.json();
 
-    console.log('TERMS DATA:', data);
-
     if (data.messages == "Confirm  Ticket Successfuly") {
       setVerified(true);
     }
-  }, []);
+  }, [user]);
 
   const handleClick = () => {
     history.push("/login");
