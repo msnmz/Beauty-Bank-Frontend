@@ -1,22 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import React, { useState, useContext } from "react";
 import { useFormik } from "formik";
-import * as yup from "yup";
 import { makeStyles } from "@material-ui/core/styles";
 import { AppContext } from "../context/AppContext";
-
-import {
-  Paper,
-  Grid,
-  Typography,
-  Button,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-} from "@material-ui/core";
-import { LayoutClient } from "../components/Index";
-
+import { Paper, Grid, Typography, Button } from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -24,7 +10,6 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import CardContent from "@material-ui/core/CardContent";
-
 import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles((theme) => ({
@@ -82,91 +67,56 @@ const useStyles = makeStyles((theme) => ({
 const OrganizeTicket = ({ selectedTicket, handleClose }) => {
   // constants
   const classes = useStyles();
-  const history = useHistory();
-  const params = useParams();
-
-  const { user, setUser, userProfile, setUserProfile } = useContext(AppContext);
-  const [userData, setUserData] = useState([]);
-
-  console.log("USER:", user);
-
-  useEffect(async () => {
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user?.tokens?.access}`,
-      },
-    };
-
-    const response = await fetch(
-      `https://bbank-backend-app.herokuapp.com/auth/user-detail/${user?.username}`,
-      requestOptions
-    );
-    const data = await response.json();
-
-    setUserData(data);
-  }, []);
-
-  const [proList, setProList] = useState([]);
-  const [connectorList, setConnectorList] = useState([]);
-
-  useEffect(async () => {
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user?.tokens?.access}`,
-      },
-    };
-
-    const response = await fetch(
-      `https://bbank-backend-app.herokuapp.com/auth/user-list/`,
-      requestOptions
-    );
-    const data = await response.json();
-
-    const filteredPro = data.filter((item) => {
-      if (item.is_pro) return item;
-    });
-    setProList(filteredPro);
-
-    const filteredConnector = data.filter((item) => {
-      if (item.is_connector) return item;
-    });
-    setConnectorList(filteredConnector);
-  }, []);
+  const { user } = useContext(AppContext);
 
   // initial values
-
-  const initialValues = {
-    ticketContent: "",
-  };
+  const initialValues = {};
 
   // handleSubmit
+  let serviceType;
+  switch (selectedTicket?.service_type) {
+    case "kapper":
+      serviceType = 0;
+      break;
+    case "schoonheidsspecialiste":
+      serviceType = 1;
+      break;
+    case "pedicure":
+      serviceType = 2;
+      break;
+    case "visagist":
+      serviceType = 3;
+      break;
+    case "styliste":
+      serviceType = 4;
+      break;
+    case "nagelstyliste":
+      serviceType = 5;
+      break;
+    case "haarwerken":
+      serviceType = 6;
+      break;
+    default:
+      break;
+  }
 
-  async function onSubmit(values) {
-    const data = {
-      service_type: sendingServiceType,
-      appointment_date: datePicker,
-    };
-
+  async function onSubmit() {
     const requestOptions = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user?.tokens?.access}`,
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        appointment_date: datePicker,
+        service_type: serviceType,
+      }),
     };
 
     const response = await fetch(
       `https://bbank-backend-app.herokuapp.com/ticket/client-tickets/${selectedTicket.id}`,
       requestOptions
     );
-
-    console.log('RESPONSE:', response);
-
     handleClose();
   }
 
@@ -176,41 +126,10 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
     onSubmit,
   });
 
-  const [serviceType, setServiceType] = useState(selectedTicket?.service_type);
-  const [sendingServiceType, setSendingServiceType] = useState(0);
-  const [selectConnector, setSelectConnector] = useState("");
   const [datePicker, setDatePicker] = useState("");
-
-  const handleChangeServiceType = (event) => {
-    setServiceType(event.target.value);
-    if(serviceType=="kapper"){
-      setSendingServiceType(0);
-    } else if (serviceType=="schoonheidsspecialiste") {
-      setSendingServiceType(1)
-    } else if (serviceType=="pedicure") {
-      setSendingServiceType(2)
-    } else if (serviceType=="visagist") {
-      setSendingServiceType(3)
-    } else if (serviceType=="styliste") {
-      setSendingServiceType(4)
-    } else if (serviceType=="nagelstyliste") {
-      setSendingServiceType(5)
-    } else if (serviceType=="haarwerken") {
-      setSendingServiceType(6)
-    }
-  };
-
-  const handleChangeConnector = (event) => {
-    setSelectConnector(event.target.value);
-  };
-
   const handleDatePicker = (event) => {
     setDatePicker(event.target.value);
   };
-
-  // console.log('SELECTED TICKET:', selectedTicket);
-  // console.log('SERVICE TYPE:', serviceType);
-  console.log('SERVICE TYPE:', sendingServiceType);
 
   return (
     <main className={classes.layout}>
@@ -286,32 +205,7 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
               onSubmit={formik.handleSubmit}
             >
               <div className={classes.formInputs}>
-                <Grid item xs={6}>
-                  <FormControl
-                    variant="outlined"
-                    className={classes.formControl}
-                  >
-                    <InputLabel id="demo-simple-select-outlined-label">
-                      Service Type
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-outlined-label"
-                      id="demo-simple-select-outlined"
-                      value={serviceType}
-                      onChange={handleChangeServiceType}
-                      label="Select Pro"
-                    >
-                      <MenuItem value={"kapper"}>Kapper</MenuItem>
-                      <MenuItem value={"schoonheidsspecialiste"}>Schoonheidsspecialiste</MenuItem>
-                      <MenuItem value={"pedicure"}>Pedicure</MenuItem>
-                      <MenuItem value={"visagist"}>Visagist</MenuItem>
-                      <MenuItem value={"styliste"}>Styliste</MenuItem>
-                      <MenuItem value={"nagelstyliste"}>Nagelstyliste</MenuItem>
-                      <MenuItem value={"haarwerken"}>Haarwerken</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                   <TextField
                     variant="outlined"
                     id="datetime-local"
@@ -325,24 +219,6 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
                     }}
                   />
                 </Grid>
-                {/* <Grid item xs={12}>
-                <FormControl variant="outlined" className={classes.formControl}>
-                  <InputLabel id="demo-simple-select-outlined-label">
-                    Select Connector
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-outlined-label"
-                    id="demo-simple-select-outlined"
-                    value={selectConnector}
-                    onChange={handleChangeConnector}
-                    label="Select Connector"
-                  >
-                    {connectorList?.map((connector) => (
-                      <MenuItem value={connector?.id}>{connector?.email}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid> */}
               </div>
               <Button
                 type="submit"
@@ -351,7 +227,7 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
                 color="secondary"
                 className={classes.submit}
               >
-                Organize Ticket
+                Set Ticket Date
               </Button>
             </form>
           </Grid>

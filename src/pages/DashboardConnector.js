@@ -130,7 +130,7 @@ const DashboardConnector = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {ticketsData?.map((ticket) => (
+                {ticketsData?.slice(0).reverse().map((ticket) => (
                   <TableRow key={ticket.id}>
                     <TableCell>{ticket.id}</TableCell>
                     <TableCell>{ticket.owner.username}</TableCell>

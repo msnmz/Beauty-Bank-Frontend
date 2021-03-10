@@ -190,7 +190,7 @@ const CreateTicket = () => {
       );
 
       if (response?.status == 201) {
-        alert("Your ticket succesfully created!");
+        // alert("Your ticket succesfully created!");
         history.push("/client");
       }
     } else {
