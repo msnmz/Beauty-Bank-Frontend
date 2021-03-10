@@ -4,17 +4,17 @@ import { LayoutClient, OrganizeTicket, Steps } from "../components/Index";
 import clsx from "clsx";
 import { AppContext } from "../context/AppContext";
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography';
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Typography from "@material-ui/core/Typography";
 
 import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
 import Modal from "@material-ui/core/Modal";
-import { ConfirmTicketModal } from '../components/Index'
+import { ConfirmTicketModal } from "../components/Index";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -46,9 +46,7 @@ const DashboardClient = () => {
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const history = useHistory();
 
-  const { user, setUser, userProfile, setUserProfile } = useContext(AppContext);
-
-  console.log('CLIENT USER:', user);
+  const { user } = useContext(AppContext);
 
   const [ticketsData, setTicketsData] = useState([]);
 
@@ -74,23 +72,25 @@ const DashboardClient = () => {
       if (item.owner.username == user.username) return item;
     });
     setTicketsData(filteredData);
-  }, []);
-  
+  }, [open]);
 
   const handleOpen = (ticket) => {
     setOpen(true);
     setSelectedTicket(ticket);
+    console.log('SELECTED TICKET: ', ticket)
   };
 
   const handleClose = () => {
     setOpen(false);
   };
 
-
   const modalBody = (
     <div className={classes.paperModal}>
       <h1 id="simple-modal-title">Set Ticket Date</h1>
-      <OrganizeTicket selectedTicket={selectedTicket} handleClose={handleClose}/>
+      <OrganizeTicket
+        selectedTicket={selectedTicket}
+        handleClose={handleClose}
+      />
     </div>
   );
 
@@ -135,26 +135,39 @@ const DashboardClient = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {ticketsData?.map((ticket) => (
-                  <TableRow key={ticket.id}>
-                    <TableCell>{ticket.id}</TableCell>
-                    <TableCell>{ticket.owner.username}</TableCell>
-                    <TableCell>{ticket.created_at}</TableCell>
-                    <TableCell>{ticket.service_type}</TableCell>
-                    <TableCell>{ticket.phone_number}</TableCell>
-                    <TableCell>
-                      <Button
-                        onClick={() => {ticket?.is_client_confirm ? alert('Already Confirmed!') : handleOpen(ticket)}}
-                        variant="outlined"
-                        color={ticket?.is_client_confirm ? "primary" : "secondary"}
-                        disabled={ticket?.terms_approved ? false : true}
-                        value="Confirm"
-                      >
-                        {ticket?.terms_approved ? 'Set Ticket Date' : 'Approve Terms'}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {ticketsData
+                  ?.slice(0)
+                  .reverse()
+                  .map((ticket) => (
+                    <TableRow key={ticket.id}>
+                      <TableCell>{ticket.id}</TableCell>
+                      <TableCell>{ticket.owner.username}</TableCell>
+                      <TableCell>{ticket.created_at}</TableCell>
+                      <TableCell>{ticket.service_type}</TableCell>
+                      <TableCell>{ticket.phone_number}</TableCell>
+                      <TableCell>
+                        <Button
+                          onClick={() => {
+                            ticket?.appointment_date
+                              ? alert("You already set the date!")
+                              : handleOpen(ticket);
+                          }}
+                          variant="outlined"
+                          color={
+                            ticket?.appointment_date ? "primary" : "secondary"
+                          }
+                          disabled={ticket?.terms_approved ? false : true}
+                          value="Confirm"
+                        >
+                          {ticket?.appointment_date
+                            ? `${ticket?.appointment_date.split('T')}`
+                            : ticket?.terms_approved
+                            ? "Set Ticket Date"
+                            : "Approve Terms"}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </Paper>
