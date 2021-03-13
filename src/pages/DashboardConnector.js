@@ -85,7 +85,7 @@ const DashboardConnector = () => {
 
   const modalBody = (
     <div className={classes.paperModal}>
-      <h1 id="simple-modal-title">Organize Ticket</h1>
+      <h1 id="simple-modal-title">Assign Pro</h1>
       {/* <OrganizeTicket selectedTicket={selectedTicket} handleClose={handleClose}/> */}
     </div>
   );
