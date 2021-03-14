@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Grid, Paper, makeStyles } from "@material-ui/core";
-import { LayoutClient, OrganizeTicket, Steps } from "../components/Index";
+import { LayoutClient, SetTicketDate, Steps } from "../components/Index";
 import clsx from "clsx";
 import { AppContext } from "../context/AppContext";
 
@@ -30,10 +30,10 @@ const useStyles = makeStyles((theme) => ({
   },
   paperModal: {
     position: "absolute",
-    top: "10vh",
+    top: "3vh",
     left: "35vw",
     width: 700,
-    height: 700,
+    height: 800,
     backgroundColor: theme.palette.background.paper,
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
@@ -84,7 +84,7 @@ const DashboardClient = () => {
   const modalBody = (
     <div className={classes.paperModal}>
       <h1 id="simple-modal-title">Set Ticket Date</h1>
-      <OrganizeTicket
+      <SetTicketDate
         selectedTicket={selectedTicket}
         handleClose={handleClose}
       />

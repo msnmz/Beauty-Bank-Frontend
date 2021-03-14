@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert";
@@ -9,7 +9,6 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { useHistory } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
-import { AppContext } from "../context/AppContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,34 +39,31 @@ const TermsApproved = () => {
   const params = useParams();
   const [isVerified, setVerified] = useState(false);
   const history = useHistory();
-  const { user } = useContext(AppContext);
 
   useEffect(async () => {
     const id = params.id;
-    const userAccessToken = user?.tokens?.access;
 
     const requestOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${userAccessToken}`,
       },
-      body: JSON.stringify({ "id": `${id}` }),
+      body: JSON.stringify({ id : id }),
     };
 
     const response = await fetch(
-      `https://bbank-backend-app.herokuapp.com/ticket/terms_approved/`,
+      `https://bbank-backend-app.herokuapp.com/ticket/terms-approved/`,
       requestOptions
     );
     const data = await response.json();
 
-    if (data.messages == "Confirm  Ticket Successfuly") {
+    if (data.messages == "Ticket Terms Approved Successfuly") {
       setVerified(true);
     }
-  }, [user]);
+  }, []);
 
   const handleClick = () => {
-    history.push("/login");
+    history.push("/client");
   };
 
   return (
@@ -102,7 +98,7 @@ const TermsApproved = () => {
               color="secondary"
               value="Login Page"
             >
-              Go to Login Page
+              Go to Dashboard
             </Button>
           </CardActions>
         </Card>
