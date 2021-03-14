@@ -63,15 +63,12 @@ const DashboardClient = () => {
     };
 
     const response = await fetch(
-      `https://bbank-backend-app.herokuapp.com/ticket/ticket-list/`,
+      `https://bbank-backend-app.herokuapp.com/ticket/client-ticket-list/`,
       requestOptions
     );
     const data = await response.json();
 
-    const filteredData = data.filter((item) => {
-      if (item.owner.username == user.username) return item;
-    });
-    setTicketsData(filteredData);
+    setTicketsData(data);
   }, [open]);
 
   const handleOpen = (ticket) => {

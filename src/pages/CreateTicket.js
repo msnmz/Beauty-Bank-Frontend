@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useHistory, useParams } from "react-router-dom";
-import { useFormik } from "formik";
-import * as yup from "yup";
+import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { AppContext } from "../context/AppContext";
 
@@ -10,10 +8,6 @@ import {
   Grid,
   Typography,
   Button,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
 } from "@material-ui/core";
 import { LayoutClient } from "../components/Index";
 
@@ -56,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(7),
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: "100%",
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -71,14 +65,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CreateTicket = () => {
-  // constants
+
+  // Constants
   const classes = useStyles();
   const history = useHistory();
-  const params = useParams();
-
-  const { user, setUser, userProfile, setUserProfile } = useContext(AppContext);
+  const { user } = useContext(AppContext);
   const [userData, setUserData] = useState([]);
 
+  // Get User
   useEffect(async () => {
     const requestOptions = {
       method: "GET",
@@ -97,118 +91,28 @@ const CreateTicket = () => {
     setUserData(data);
   }, []);
 
-  // validation obj
-  // const validationSchema = yup.object().shape({
-  // firstName: yup
-  //   .string()
-  //   .required("This field is required")
-  //   .min(1, "Must be at least 1 characters")
-  //   .max(30, "Must be a maximum of 30 characters"),
-  // lastName: yup
-  //   .string()
-  //   .required("This field is required")
-  //   .min(1, "Must be at least 1 characters")
-  //   .max(30, "Must be a maximum of 30 characters"),
-  // userName: yup
-  //   .string()
-  //   .required("This field is required")
-  //   .min(1, "Must be at least 1 characters")
-  //   .max(30, "Must be a maximum of 30 characters"),
-  // email: yup
-  //   .string()
-  //   .required("This field is required")
-  //   .email("Invalid e-mail")
-  //   .min(4, "Must be at least 4 characters")
-  //   .max(30, "Must be a maximum of 30 characters"),
-  // password: yup
-  //   .string()
-  //   .required("This field is required")
-  //   .min(6, "Must be at least 6 characters")
-  //   .max(30, "Must be a maximum of 30 characters"),
-  // passwordConfirm: yup
-  //   .string()
-  //   .oneOf([yup.ref("password"), null], "Passwords must match"),
-  // phone: yup
-  //   .string()
-  //   .required("This field is required")
-  //   .min(1, "Must be at least 1 characters")
-  //   .max(20, "Must be a maximum of 20 characters"),
-  // conditions: yup.bool().oneOf([true], "This field is required"),
-  // ...(id === "professional" && {
-  //   zip: yup
-  //     .string()
-  //     .required("This field is required")
-  //     .min(1, "Must be at least 1 characters")
-  //     .max(30, "Must be a maximum of 8 characters"),
-  //   aboutMe: yup
-  //     .string()
-  //     .required("This field is required")
-  //     .min(1, "Must be at least 1 characters")
-  //     .max(1500, "Must be a maximum of 1500 characters"),
-  //   companyName: yup.string().max(100, "Must be a maximum of 100 characters"),
-  //   gender: yup.number().min(0).max(2),
-  //   capacity: yup.number().min(0),
-  // }),
-  // TODO: search whether there is extra validation for password.
-  // });
 
-  // initial values
+  // Submit Create Ticket
+  async function handleCreateTicket(){
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.tokens?.access}`,
+      },
+    };
 
-  const initialValues = {
-    ticketContent: "",
-  };
+    const response = await fetch(
+      "https://bbank-backend-app.herokuapp.com/ticket/create/",
+      requestOptions
+    );
 
-  // handleSubmit
-
-  async function onSubmit(values) {
-    if (
-      userData.email &&
-      userData.first_name &&
-      userData.last_name &&
-      userData.gender &&
-      userData.address &&
-      userData.zip_address &&
-      userData.phone_number &&
-      userData.about_me
-    ) {
-      const data = {
-        service_type: serviceType,
-      };
-
-      const requestOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.tokens?.access}`,
-        },
-        body: JSON.stringify(data),
-      };
-
-      const response = await fetch(
-        "https://bbank-backend-app.herokuapp.com/ticket/create/",
-        requestOptions
-      );
-
-      if (response?.status == 201) {
-        // alert("Your ticket succesfully created!");
-        history.push("/client");
-      }
-    } else {
-      alert("Please update and fill in all the information in your profile!");
-    }
+    if (response?.status == 201) {
+      // alert("Your ticket succesfully created!");
+      history.push("/client");
+    } else { alert("Please update and fill in all the information in your profile!")}
   }
-
-  // formik
-  const formik = useFormik({
-    initialValues,
-    onSubmit,
-  });
-
-  const [serviceType, setServiceType] = React.useState("");
-
-  const handleChange = (event) => {
-    setServiceType(event.target.value);
-  };
+  
 
   return (
     <LayoutClient pageTitle="Create Ticket">
@@ -283,46 +187,18 @@ const CreateTicket = () => {
                   </Typography>
                 </CardContent>
               </Grid>
-              <form
-                className={classes.form}
-                noValidate
-                onSubmit={formik.handleSubmit}
-              >
-                <Grid item xs={12}>
-                  <FormControl
-                    variant="outlined"
-                    className={classes.formControl}
-                  >
-                    <InputLabel id="demo-simple-select-outlined-label">
-                      Service Type
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-outlined-label"
-                      id="demo-simple-select-outlined"
-                      value={serviceType}
-                      onChange={handleChange}
-                      label="Service Type"
-                    >
-                      <MenuItem value={0}>Kapper</MenuItem>
-                      <MenuItem value={1}>Schoonheidsspecialiste</MenuItem>
-                      <MenuItem value={2}>Pedicure</MenuItem>
-                      <MenuItem value={3}>Visagist</MenuItem>
-                      <MenuItem value={4}>Styliste</MenuItem>
-                      <MenuItem value={5}>Nagelstyliste</MenuItem>
-                      <MenuItem value={6}>Haarwerken</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
+              <Grid item xs={12}>
                 <Button
                   type="submit"
                   fullWidth
                   variant="contained"
                   color="secondary"
                   className={classes.submit}
+                  onClick={() => handleCreateTicket()}
                 >
                   Create Ticket
                 </Button>
-              </form>
+              </Grid>
             </Grid>
           </Grid>
         </Paper>
