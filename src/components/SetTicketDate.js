@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(5),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -64,41 +64,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const OrganizeTicket = ({ selectedTicket, handleClose }) => {
+const SetTicketDate = ({ selectedTicket, handleClose }) => {
   // constants
   const classes = useStyles();
   const { user } = useContext(AppContext);
-
-  // initial values
-  const initialValues = {};
-
-  // handleSubmit
-  let serviceType;
-  switch (selectedTicket?.service_type) {
-    case "kapper":
-      serviceType = 0;
-      break;
-    case "schoonheidsspecialiste":
-      serviceType = 1;
-      break;
-    case "pedicure":
-      serviceType = 2;
-      break;
-    case "visagist":
-      serviceType = 3;
-      break;
-    case "styliste":
-      serviceType = 4;
-      break;
-    case "nagelstyliste":
-      serviceType = 5;
-      break;
-    case "haarwerken":
-      serviceType = 6;
-      break;
-    default:
-      break;
-  }
+  const [datePicker, setDatePicker] = useState("2021-01-01T00:00:00Z");
 
   async function onSubmit() {
     const requestOptions = {
@@ -109,7 +79,6 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
       },
       body: JSON.stringify({
         appointment_date: datePicker,
-        service_type: serviceType,
       }),
     };
 
@@ -117,8 +86,12 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
       `https://bbank-backend-app.herokuapp.com/ticket/client-tickets/${selectedTicket.id}`,
       requestOptions
     );
+     
     handleClose();
   }
+
+  // initial values
+  const initialValues = {};
 
   // formik
   const formik = useFormik({
@@ -126,7 +99,7 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
     onSubmit,
   });
 
-  const [datePicker, setDatePicker] = useState("");
+
   const handleDatePicker = (event) => {
     setDatePicker(event.target.value);
   };
@@ -199,6 +172,30 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
                 </Typography>
               </CardContent>
             </Grid>
+            <TableContainer>
+              <Table
+                className={classes.table}
+                aria-label="a dense table"
+                size="small"
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Assigned Pro</TableCell>
+                    <TableCell align="right"></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Pro Name</TableCell>
+                    <TableCell align="left">My Pro</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Pro Phone Number</TableCell>
+                    <TableCell align="left">05551234567</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
             <form
               className={classes.form}
               noValidate
@@ -209,7 +206,7 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
                   <TextField
                     variant="outlined"
                     id="datetime-local"
-                    label="Next appointment"
+                    label="Set Ticket Date"
                     type="datetime-local"
                     defaultValue="2017-05-24T10:30"
                     className={classes.textField}
@@ -237,4 +234,4 @@ const OrganizeTicket = ({ selectedTicket, handleClose }) => {
   );
 };
 
-export { OrganizeTicket };
+export { SetTicketDate };

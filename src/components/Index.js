@@ -5,6 +5,6 @@ export * from './Stepper';
 export * from './LayoutClient';
 export * from './LayoutConnector';
 export * from './EditProfile';
-export * from './OrganizeTicket';
+export * from './SetTicketDate';
 export * from './ConfirmTicketModal';
 export * from './AssignPro';
