@@ -7,3 +7,4 @@ export * from './LayoutConnector';
 export * from './EditProfile';
 export * from './OrganizeTicket';
 export * from './ConfirmTicketModal';
+export * from './AssignPro';

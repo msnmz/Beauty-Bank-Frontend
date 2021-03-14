@@ -16,7 +16,7 @@ import Typography from "@material-ui/core/Typography";
 
 import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Modal";
-import { OrganizeTicket } from '../components/Index'
+import { AssignPro } from '../components/Index'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -34,10 +34,10 @@ const useStyles = makeStyles((theme) => ({
   },
   paperModal: {
     position: "absolute",
-    top: "20vh",
+    top: "15vh",
     left: "35vw",
     width: 700,
-    height: 700,
+    height: 650,
     backgroundColor: theme.palette.background.paper,
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
@@ -86,7 +86,7 @@ const DashboardConnector = () => {
   const modalBody = (
     <div className={classes.paperModal}>
       <h1 id="simple-modal-title">Assign Pro</h1>
-      {/* <OrganizeTicket selectedTicket={selectedTicket} handleClose={handleClose}/> */}
+      <AssignPro selectedTicket={selectedTicket} handleClose={handleClose}/>
     </div>
   );
 
@@ -141,10 +141,10 @@ const DashboardConnector = () => {
                       <Button
                         onClick={() => {handleOpen(ticket)}}
                         variant="outlined"
-                        color={ticket?.appointment_date != null ? "primary" : "secondary"}
+                        color={ticket?.pro ? "primary" : "secondary"}
                         value="Choose"
                       >
-                        {ticket?.appointment_date != null ? "Done" : "Choose"}
+                        {ticket?.pro ? "Assigned" : "Assign Pro"}
                       </Button>
                     </TableCell>
                   </TableRow>
