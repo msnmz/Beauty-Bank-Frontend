@@ -18,6 +18,8 @@ import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Modal";
 import { AssignPro } from '../components/Index'
 
+import {FormatDate, FormatDateTime} from '../helper/FormatDate'
+
 const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(4),
@@ -42,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+  },
+  button: {
+    width: 150,
   },
 }));
 
@@ -124,18 +129,18 @@ const DashboardConnector = () => {
                   <TableCell>Ticket ID</TableCell>
                   <TableCell>Owner</TableCell>
                   <TableCell>Create Date</TableCell>
-                  <TableCell>Service Type</TableCell>
+                  <TableCell>Appointment Date</TableCell>
                   <TableCell>Phone Number</TableCell>
-                  <TableCell>Choose</TableCell>
+                  <TableCell>Assign Pro</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {ticketsData?.slice(0).reverse().map((ticket) => (
                   <TableRow key={ticket.id}>
                     <TableCell>{ticket.id}</TableCell>
-                    <TableCell>{ticket.owner.username}</TableCell>
-                    <TableCell>{ticket.created_at}</TableCell>
-                    <TableCell>{ticket.service_type}</TableCell>
+                    <TableCell>{`${ticket.owner.first_name} ${ticket.owner.last_name}`}</TableCell>
+                    <TableCell>{FormatDate(ticket.created_at)}</TableCell>
+                    <TableCell>{ticket?.appointment_date ? FormatDateTime(ticket?.appointment_date) : '-'}</TableCell>
                     <TableCell>{ticket.phone_number}</TableCell>
                     <TableCell>
                       <Button
@@ -143,8 +148,9 @@ const DashboardConnector = () => {
                         variant="outlined"
                         color={ticket?.pro ? "primary" : "secondary"}
                         value="Choose"
+                        className={classes.button}
                       >
-                        {ticket?.pro ? "Assigned" : "Assign Pro"}
+                        {ticket?.pro ? "Pro Assigned" : "Assign Pro"}
                       </Button>
                     </TableCell>
                   </TableRow>
