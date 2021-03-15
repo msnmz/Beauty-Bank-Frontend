@@ -225,7 +225,7 @@ const AssignPro = ({ selectedTicket, handleClose }) => {
                       label="Select Pro"
                     >
                       {proList?.map((pro) => (
-                        <MenuItem value={pro?.id}>{pro?.email}</MenuItem>
+                        <MenuItem value={pro?.id}>{`${pro?.first_name} ${pro?.last_name} (✉${pro?.email}) (☎${pro?.phone_number})`}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>

@@ -72,7 +72,7 @@ const SignupDetail = () => {
         if (id === 'client'){
             setDetailPath('register');
         } else if (id === 'professional') {
-            setDetailPath('register-professional');
+            setDetailPath('register-pro');
         } else if (id === 'connector') {
             setDetailPath('register-connector');
         } else if (id === 'sponsor') {
@@ -135,7 +135,8 @@ const SignupDetail = () => {
                 company_name: values.companyName,
                 for_gender: values.gender,
                 reserved_capacity: values.capacity,
-                zip_address: values.zip
+                zip_address: values.zip,
+                service_type: 0
             })
         }
         Request.postData(`https://bbank-backend-app.herokuapp.com/auth/${detailPath}/`, data)

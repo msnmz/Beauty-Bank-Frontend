@@ -38,7 +38,7 @@ const AppRouter = () => {
                 <Route exact path='/connector' component={user?.role === 'Connector' ? DashboardConnector : Signin} />
                 <Route exact path='/connector-profile' component={user?.role === 'Connector' ? ProfileConnector : Signin} />
                 <Route exact path='/connector-user-list' component={user?.role === 'Connector' ? ConnectorUserList : Signin} />
-                <Route exact path='/professional' component={user?.role === 'Professional' ? DashboardProfessional : Signin} />
+                <Route exact path='/professional' component={true ? DashboardProfessional : Signin} />
                 <Route exact path='/sponsor' component={user?.role === 'Professional' ? DashboardSponsor : Signin} />
                 <Route exact path='/create-ticket' component={user?.role === 'Client' ? CreateTicket : Signin} />
                 <Route path='/email-verify/:token' component={EmailVerify} />

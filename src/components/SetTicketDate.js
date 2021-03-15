@@ -12,6 +12,10 @@ import TableRow from "@material-ui/core/TableRow";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
 
+import {FormatDate} from '../helper/FormatDate';
+
+import moment from 'moment';
+
 const useStyles = makeStyles((theme) => ({
   layout: {
     width: "auto",
@@ -187,11 +191,11 @@ const SetTicketDate = ({ selectedTicket, handleClose }) => {
                 <TableBody>
                   <TableRow>
                     <TableCell>Pro Name</TableCell>
-                    <TableCell align="left">My Pro</TableCell>
+                    <TableCell align="left">{`${selectedTicket?.pro_detail?.first_name} ${selectedTicket?.pro_detail?.last_name}`}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Pro Phone Number</TableCell>
-                    <TableCell align="left">05551234567</TableCell>
+                    <TableCell align="left">{selectedTicket?.pro_detail?.phone_number}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

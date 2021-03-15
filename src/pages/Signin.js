@@ -82,7 +82,7 @@ const Signin = () => {
                     case 'Connector':
                         history.push('/connector');
                         break;
-                    case 'Professional':
+                    case 'Pro':
                         history.push('/professional');
                         break;
                     case 'Sponsor':

@@ -89,7 +89,7 @@ const ConnectorUserList = () => {
                             <TableCell>{user?.last_name}</TableCell>
                             <TableCell>{user?.email}</TableCell>
                             <TableCell>{user?.phone_number}</TableCell>
-                            <TableCell>{user?.gender}</TableCell>
+                            <TableCell>{user?.gender==0 ? 'Male' : user?.gender==1 ? 'Female' : '-' }</TableCell>
                             <TableCell>{user?.zip_address}</TableCell>
                         </TableRow>
                     ))}

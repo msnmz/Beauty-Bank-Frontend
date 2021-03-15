@@ -14,14 +14,15 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
 import Modal from "@material-ui/core/Modal";
-import { ConfirmTicketModal } from "../components/Index";
+
+import {FormatDate, FormatDateTime} from '../helper/FormatDate';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
     marginTop: theme.spacing(2),
     display: "flex",
-    overflow: "auto",
+    overflow: "none",
     flexDirection: "column",
     marginBottom: theme.spacing(10),
   },
@@ -39,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
+  button: {
+    width: 150,
+  }
 }));
 
 const DashboardClient = () => {
@@ -74,7 +78,6 @@ const DashboardClient = () => {
   const handleOpen = (ticket) => {
     setOpen(true);
     setSelectedTicket(ticket);
-    console.log('SELECTED TICKET: ', ticket)
   };
 
   const handleClose = () => {
@@ -124,11 +127,10 @@ const DashboardClient = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>Ticket ID</TableCell>
-                  <TableCell>Owner</TableCell>
                   <TableCell>Create Date</TableCell>
-                  <TableCell>Service Type</TableCell>
-                  <TableCell>Phone Number</TableCell>
-                  <TableCell>Confirm</TableCell>
+                  <TableCell>Appointment Date</TableCell>
+                  <TableCell>Pro Confirm</TableCell>
+                  <TableCell>Approve&Set Date</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -138,10 +140,9 @@ const DashboardClient = () => {
                   .map((ticket) => (
                     <TableRow key={ticket.id}>
                       <TableCell>{ticket.id}</TableCell>
-                      <TableCell>{ticket.owner.username}</TableCell>
-                      <TableCell>{ticket.created_at}</TableCell>
-                      <TableCell>{ticket.service_type}</TableCell>
-                      <TableCell>{ticket.phone_number}</TableCell>
+                      <TableCell>{FormatDate(ticket.created_at)}</TableCell>
+                      <TableCell>{ticket?.appointment_date ? FormatDateTime(ticket?.appointment_date) : '-'}</TableCell>
+                      <TableCell>{ticket?.appointment_date ? 'Waiting' : ticket.is_pro_confirm ? 'Confirmed' : '-'}</TableCell>
                       <TableCell>
                         <Button
                           onClick={() => {
@@ -155,9 +156,10 @@ const DashboardClient = () => {
                           }
                           disabled={ticket?.terms_approved ? false : true}
                           value="Confirm"
+                          className={classes.button}
                         >
                           {ticket?.appointment_date
-                            ? `${ticket?.appointment_date.split('T')}`
+                            ? 'Date Setted'
                             : ticket?.terms_approved
                             ? "Set Ticket Date"
                             : "Approve Terms"}
