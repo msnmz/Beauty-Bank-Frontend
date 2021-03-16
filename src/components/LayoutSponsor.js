@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const LayoutConnector = ({ children, pageTitle }) => {
+const LayoutSponsor = ({ children, pageTitle }) => {
 
     // constants
     const classes = useStyles();
@@ -171,23 +171,17 @@ const LayoutConnector = ({ children, pageTitle }) => {
                 <Divider />
                 <List>
                     <div>
-                        <ListItem button onClick={() => history.push('/connector')}>
+                        <ListItem button onClick={() => history.push('/sponsor')}>
                             <ListItemIcon>
                                 <DashboardIcon color="primary" />
                             </ListItemIcon>
                             <ListItemText primary="Dashboard" />
                         </ListItem>
-                        <ListItem button onClick={() => history.push('/connector-profile')}>
+                        <ListItem button onClick={() => history.push('/sponsor-profile')}>
                             <ListItemIcon>
                                 <AccountCircle color="primary" />
                             </ListItemIcon>
                             <ListItemText primary="Profile" />
-                        </ListItem>
-                        <ListItem button onClick={() => history.push('/connector-user-list')}>
-                            <ListItemIcon>
-                                <PeopleAltIcon color="primary" />
-                            </ListItemIcon>
-                            <ListItemText primary="User List" />
                         </ListItem>
                     </div>
                 </List>
@@ -204,4 +198,4 @@ const LayoutConnector = ({ children, pageTitle }) => {
     );
 }
 
-export { LayoutConnector };
+export { LayoutSponsor };
