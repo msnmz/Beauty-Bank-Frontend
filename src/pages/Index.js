@@ -1,4 +1,3 @@
-// export * from './Signup';
 export * from './Signin';
 export * from './SignupDetail';
 export * from './SignupMenu';
@@ -7,10 +6,9 @@ export * from './DashboardAdmin';
 export * from './DashboardConnector';
 export * from './DashboardProfessional';
 export * from './DashboardSponsor';
-export * from './ProfileClient';
+export * from './Profile';
 export * from './EmailVerify';
 export * from './CreateTicket';
-export * from './ProfileConnector';
 export * from './ConnectorUserList';
 export * from './ConfirmTicket';
 export * from './TermsApproved';

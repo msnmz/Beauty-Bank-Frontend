@@ -6,6 +6,6 @@ export * from './LayoutClient';
 export * from './LayoutConnector';
 export * from './EditProfile';
 export * from './SetTicketDate';
-export * from './ConfirmTicketModal';
 export * from './AssignPro';
 export * from './LayoutProfessional';
+export * from './LayoutSponsor';

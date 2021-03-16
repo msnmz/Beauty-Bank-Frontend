@@ -104,7 +104,7 @@ const LayoutClient = ({ children, pageTitle }) => {
     const { user, setUser } = useContext(AppContext);
 
     // states
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
 
     // console.log(user);
 

@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditProfile = () => {
+const EditProfile = ({handleClose}) => {
   const classes = useStyles();
   const history = useHistory();
   const { id } = useParams();
@@ -140,13 +140,7 @@ const EditProfile = () => {
       requestOptions
     );
     const data = await response.json();
-    if(user?.role=='Client'){
-      history.push("/client");
-    } else if (user?.role=='Connector'){
-      history.push("/connector");
-    } else {
-      history.push("/login");
-    }
+    handleClose();
   }
 
   // formik

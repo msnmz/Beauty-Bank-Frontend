@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Grid, makeStyles } from "@material-ui/core";
-import { LayoutConnector } from "../components/Index";
+import { LayoutClient, LayoutConnector, LayoutProfessional, LayoutSponsor } from "../components/Index";
 
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
@@ -79,12 +79,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProfileConnector = () => {
+const Profile = () => {
   const classes = useStyles();
   const { user, setUser, userProfile, setUserProfile } = useContext(AppContext);
   const [userData, setUserData] = useState([]);
-
   const [open, setOpen] = useState(false);
+
+  let Layout;
+  switch (user?.role) {
+    case "Client":
+      Layout = LayoutClient;
+      break;
+    case "Connector":
+      Layout = LayoutConnector;
+      break;
+    case "Pro":
+      Layout = LayoutProfessional
+      break;
+    case "Sponsor":
+      Layout = LayoutSponsor;
+      break;
+    default:
+      break;
+  }
 
   const handleOpen = () => {
     setOpen(true);
@@ -97,7 +114,7 @@ const ProfileConnector = () => {
   const modalBody = (
     <div className={classes.paperModal}>
       <h1 id="simple-modal-title">Edit Profile</h1>
-      <EditProfile />
+      <EditProfile handleClose={handleClose} />
     </div>
   );
 
@@ -117,12 +134,12 @@ const ProfileConnector = () => {
     const data = await response.json();
 
     setUserData(data);
-  }, []);
+  }, [open]);
 
   setUserProfile(userData);
 
   return (
-    <LayoutConnector pageTitle="Profile">
+    <Layout pageTitle="Profile">
       <Modal
         open={open}
         onClose={handleClose}
@@ -216,8 +233,8 @@ const ProfileConnector = () => {
           </Grid>
         </Grid>
       </Paper>
-    </LayoutConnector>
+    </Layout>
   );
 };
 
-export { ProfileConnector };
+export { Profile };

@@ -106,7 +106,7 @@ const LayoutProfessional = ({ children, pageTitle }) => {
     const { user, setUser } = useContext(AppContext);
 
     // states
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
 
     // Side Menu Functions
     const handleDrawerOpen = () => {

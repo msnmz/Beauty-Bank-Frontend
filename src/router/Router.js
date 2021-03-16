@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Switch, Route, useParams } from 'react-router-dom';
 import {
-    Signup,
     Signin,
     SignupDetail,
     SignupMenu,
@@ -11,9 +10,8 @@ import {
     DashboardProfessional,
     DashboardSponsor,
     EmailVerify,
-    ProfileClient,
+    Profile,
     CreateTicket,
-    ProfileConnector,
     ConnectorUserList,
     ConfirmTicket,
     TermsApproved,
@@ -32,14 +30,16 @@ const AppRouter = () => {
                 <Route exact path='/register' component={SignupMenu} />
                 <Route exact path='/register/:id' component={SignupDetail} />
                 <Route exact path='/login' component={Signin} />
-                <Route exact path='/admin' component={DashboardAdmin} />
+                <Route exact path='/admin' component={user?.role === 'Admin' ? DashboardAdmin : Signin} />
                 <Route exact path='/client' component={user?.role === 'Client' ? DashboardClient : Signin} />
-                <Route exact path='/client-profile' component={user?.role === 'Client' ? ProfileClient : Signin} />
+                <Route exact path='/client-profile' component={user?.role === 'Client' ? Profile : Signin} />
                 <Route exact path='/connector' component={user?.role === 'Connector' ? DashboardConnector : Signin} />
-                <Route exact path='/connector-profile' component={user?.role === 'Connector' ? ProfileConnector : Signin} />
+                <Route exact path='/connector-profile' component={user?.role === 'Connector' ? Profile : Signin} />
                 <Route exact path='/connector-user-list' component={user?.role === 'Connector' ? ConnectorUserList : Signin} />
-                <Route exact path='/professional' component={true ? DashboardProfessional : Signin} />
-                <Route exact path='/sponsor' component={user?.role === 'Professional' ? DashboardSponsor : Signin} />
+                <Route exact path='/professional' component={user?.role === 'Pro' ? DashboardProfessional : Signin} />
+                <Route exact path='/professional-profile' component={user?.role === 'Pro' ? Profile : Signin} />
+                <Route exact path='/sponsor' component={user?.role === 'Sponsor' ? DashboardSponsor : Signin} />
+                <Route exact path='/sponsor-profile' component={user?.role === 'Sponsor' ? Profile : Signin} />
                 <Route exact path='/create-ticket' component={user?.role === 'Client' ? CreateTicket : Signin} />
                 <Route path='/email-verify/:token' component={EmailVerify} />
                 <Route path='/ticket/confirm/:id' component={ConfirmTicket} />
