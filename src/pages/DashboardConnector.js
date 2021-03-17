@@ -75,7 +75,7 @@ const DashboardConnector = () => {
     );
     const data = await response.json();
 
-    setTicketsData(data);
+    setTicketsData(data.results);
   }, [open]);
 
 

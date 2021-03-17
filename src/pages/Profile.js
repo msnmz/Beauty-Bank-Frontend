@@ -1,9 +1,17 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Grid, makeStyles } from "@material-ui/core";
-import { LayoutClient, LayoutConnector, LayoutProfessional, LayoutSponsor } from "../components/Index";
+import {
+  LayoutClient,
+  LayoutConnector,
+  LayoutProfessional,
+  LayoutSponsor,
+} from "../components/Index";
+
+import axios from 'axios';
 
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Typography from "@material-ui/core/Typography";
 import { AppContext } from "../context/AppContext";
 
@@ -18,7 +26,6 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Modal from "@material-ui/core/Modal";
 import { EditProfile } from "../components/Index";
-
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -51,7 +58,6 @@ const useStyles = makeStyles((theme) => ({
   large: {
     width: theme.spacing(30),
     height: theme.spacing(30),
-    marginLeft: theme.spacing(10),
   },
   about: {
     width: theme.spacing(60),
@@ -77,6 +83,14 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
+  profile_image: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  input: {
+    display: 'none',
+  },
 }));
 
 const Profile = () => {
@@ -94,7 +108,7 @@ const Profile = () => {
       Layout = LayoutConnector;
       break;
     case "Pro":
-      Layout = LayoutProfessional
+      Layout = LayoutProfessional;
       break;
     case "Sponsor":
       Layout = LayoutSponsor;
@@ -110,6 +124,22 @@ const Profile = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+
+  const handleUploadImage = async (event) => {
+    let image = await event.target.files[0];
+    let form_data = await new FormData();
+    await form_data.append('profile_image', image);
+
+    axios.patch( `https://bbank-backend-app.herokuapp.com/auth/user-detail/${user?.username}`, form_data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${user?.tokens?.access}`
+      }
+    })
+    .then(res => setUserData([...userData, userData.profile_image=res.data.profile_image]))
+    .catch((err) => console.log(err));
+  }
 
   const modalBody = (
     <div className={classes.paperModal}>
@@ -134,7 +164,7 @@ const Profile = () => {
     const data = await response.json();
 
     setUserData(data);
-  }, [open]);
+  }, [open, userData]);
 
   setUserProfile(userData);
 
@@ -161,12 +191,31 @@ const Profile = () => {
           </Button>
         </div>
         <Grid container spacing={3}>
-          <Grid item xs={6}>
+          <Grid item xs={6} className={classes.profile_image}>
             <Avatar
               alt={userData?.email}
               src={userData?.profile_image}
               className={classes.large}
             />
+            <input
+              accept="image/*"
+              className={classes.input}
+              id="contained-button-file"
+              multiple
+              type="file"
+              onChange={handleUploadImage}
+            />
+            <label htmlFor="contained-button-file">
+              <Button
+                variant="contained"
+                color="default"
+                className={classes.button}
+                startIcon={<CloudUploadIcon />}
+                component="span"
+              >
+                Upload
+              </Button>
+            </label>
           </Grid>
           <Grid item xs={6}>
             <CardContent className={classes.about}>
@@ -209,7 +258,13 @@ const Profile = () => {
                   </TableRow>
                   <TableRow>
                     <TableCell>Gender</TableCell>
-                    <TableCell align="left">{userData?.gender==1 ? 'Female' : (userData?.gender==2 ? 'Male' : 'Other')}</TableCell>
+                    <TableCell align="left">
+                      {userData?.gender == 1
+                        ? "Female"
+                        : userData?.gender == 2
+                        ? "Male"
+                        : "Other"}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Address</TableCell>
@@ -225,7 +280,9 @@ const Profile = () => {
                   </TableRow>
                   <TableRow>
                     <TableCell>Phone Number 2</TableCell>
-                    <TableCell align="left">{userData?.phone_number2}</TableCell>
+                    <TableCell align="left">
+                      {userData?.phone_number2}
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

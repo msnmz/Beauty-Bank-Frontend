@@ -72,7 +72,8 @@ const DashboardClient = () => {
     );
     const data = await response.json();
 
-    setTicketsData(data);
+    setTicketsData(data.results);
+    console.log('DATA: ', data.results);
   }, [open]);
 
   const handleOpen = (ticket) => {
