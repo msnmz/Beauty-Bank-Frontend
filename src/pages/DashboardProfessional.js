@@ -53,7 +53,7 @@ const DashboardProfessional = () => {
     const data = await response.json();
 
     if(response?.status==200){
-        setTicketsData(data);
+        setTicketsData(data.results);
     }
 
   }, [user]);

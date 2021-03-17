@@ -54,7 +54,7 @@ const ConnectorUserList = () => {
     );
     const data = await response.json();
 
-    setUserList(data);
+    setUserList(data.results);
 
   }, []);
 
