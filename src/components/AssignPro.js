@@ -94,7 +94,7 @@ const AssignPro = ({ selectedTicket, handleClose }) => {
     );
     const data = await response.json();
 
-    const filteredPro = data.filter((item) => {
+    const filteredPro = data.results.filter((item) => {
       if (item.is_pro) return item;
     });
     setProList(filteredPro);

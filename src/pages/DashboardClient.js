@@ -67,7 +67,7 @@ const DashboardClient = () => {
     };
 
     const response = await fetch(
-      `https://bbank-backend-app.herokuapp.com/ticket/client-ticket-list/`,
+      `https://bbank-backend-app.herokuapp.com/ticket/ticket-list/`,
       requestOptions
     );
     const data = await response.json();
