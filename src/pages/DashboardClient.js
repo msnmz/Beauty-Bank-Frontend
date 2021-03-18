@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Grid, Paper, makeStyles } from "@material-ui/core";
-import { LayoutClient, SetTicketDate, Steps } from "../components/Index";
+import { LayoutClient, SetTicketDate, Stepper } from "../components/Index";
 import clsx from "clsx";
 import { AppContext } from "../context/AppContext";
 
@@ -15,7 +15,7 @@ import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
 import Modal from "@material-ui/core/Modal";
 
-import {FormatDate, FormatDateTime} from '../helper/FormatDate';
+import { FormatDate, FormatDateTime } from '../helper/FormatDate';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -109,7 +109,7 @@ const DashboardClient = () => {
         {/* Stepper */}
         <Grid item xs={12}>
           <Paper className={fixedHeightPaper}>
-            <Steps />
+            <Stepper />
           </Paper>
         </Grid>
 
@@ -162,8 +162,8 @@ const DashboardClient = () => {
                           {ticket?.appointment_date
                             ? 'Date Setted'
                             : ticket?.terms_approved
-                            ? "Set Ticket Date"
-                            : "Approve Terms"}
+                              ? "Set Ticket Date"
+                              : "Approve Terms"}
                         </Button>
                       </TableCell>
                     </TableRow>
