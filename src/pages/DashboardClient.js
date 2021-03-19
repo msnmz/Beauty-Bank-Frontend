@@ -15,7 +15,8 @@ import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
 import Modal from "@material-ui/core/Modal";
 
-import { FormatDate, FormatDateTime } from '../helper/FormatDate';
+import { FormatDate, FormatDateTime } from "../helper/FormatDate";
+import { SetTicketFeedback } from "../components/SetTicketFeedback";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     width: 150,
-  }
+  },
 }));
 
 const DashboardClient = () => {
@@ -55,6 +56,7 @@ const DashboardClient = () => {
   const [ticketsData, setTicketsData] = useState([]);
 
   const [open, setOpen] = useState(false);
+  const [openDate, setOpenDate] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState([]);
 
   useEffect(async () => {
@@ -73,9 +75,13 @@ const DashboardClient = () => {
     const data = await response.json();
 
     setTicketsData(data.results);
-    console.log('DATA: ', data.results);
-  }, [open]);
+    console.log("DATA: ", data.results);
+  }, [open, openDate]);
 
+  const handleOpenDate = (ticket) => {
+    setOpenDate(true);
+    setSelectedTicket(ticket);
+  };
   const handleOpen = (ticket) => {
     setOpen(true);
     setSelectedTicket(ticket);
@@ -83,6 +89,7 @@ const DashboardClient = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setOpenDate(false);
   };
 
   const modalBody = (
@@ -94,22 +101,39 @@ const DashboardClient = () => {
       />
     </div>
   );
+  const modalBodyFeedback = (
+    <div className={classes.paperModal}>
+      <h1 id="simple-modal-title">Set Ticket Feedback </h1>
+      <SetTicketFeedback
+        selectedTicket={selectedTicket}
+        handleClose={handleClose}
+      />
+    </div>
+  );
 
   return (
     <LayoutClient pageTitle="Dashboard">
       <Modal
-        open={open}
+        open={openDate}
         onClose={handleClose}
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
         {modalBody}
       </Modal>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {modalBodyFeedback}
+      </Modal>
       <Grid container spacing={3}>
         {/* Stepper */}
         <Grid item xs={12}>
           <Paper className={fixedHeightPaper}>
-            <Stepper activeStep={ticketsData[ticketsData.length - 1]?.ticket_status} />
+            <Stepper activeStep={ticketsData[0]?.ticket_status} />
           </Paper>
         </Grid>
 
@@ -135,39 +159,62 @@ const DashboardClient = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {ticketsData
-                  ?.slice(0)
-                  .reverse()
-                  .map((ticket) => (
-                    <TableRow key={ticket.id}>
-                      <TableCell>{ticket.id}</TableCell>
-                      <TableCell>{FormatDate(ticket.created_at)}</TableCell>
-                      <TableCell>{ticket?.appointment_date ? FormatDateTime(ticket?.appointment_date) : '-'}</TableCell>
-                      <TableCell>{ticket?.appointment_date ? 'Waiting' : ticket.is_pro_confirm ? 'Confirmed' : '-'}</TableCell>
-                      <TableCell>
+                {ticketsData?.slice(0).map((ticket) => (
+                  <TableRow key={ticket.id}>
+                    <TableCell>{ticket.id}</TableCell>
+                    <TableCell>{FormatDate(ticket.created_at)}</TableCell>
+                    <TableCell>
+                      {ticket?.appointment_date
+                        ? FormatDateTime(ticket?.appointment_date)
+                        : "-"}
+                    </TableCell>
+                    <TableCell>
+                      {ticket?.appointment_date
+                        ? "Waiting"
+                        : ticket.is_pro_confirm
+                        ? "Confirmed"
+                        : "-"}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        onClick={() => {
+                          ticket?.appointment_date
+                            ? alert("You already set the date!")
+                            : handleOpenDate(ticket);
+                        }}
+                        variant="outlined"
+                        color={
+                          ticket?.appointment_date ? "primary" : "secondary"
+                        }
+                        disabled={ticket?.terms_approved ? false : true}
+                        value="Confirm"
+                        className={classes.button}
+                      >
+                        {ticket?.appointment_date
+                          ? "Date Setted"
+                          : ticket?.terms_approved
+                          ? "Set Ticket Date"
+                          : "Approve Terms"}
+                      </Button>
+                    </TableCell>
+                    <TableCell>
+                      {ticket?.ticket_status == "4" && (
                         <Button
                           onClick={() => {
-                            ticket?.appointment_date
-                              ? alert("You already set the date!")
-                              : handleOpen(ticket);
+                            handleOpen(ticket);
                           }}
                           variant="outlined"
-                          color={
-                            ticket?.appointment_date ? "primary" : "secondary"
-                          }
-                          disabled={ticket?.terms_approved ? false : true}
-                          value="Confirm"
+                          color={"primary"}
+                          disabled={ticket?.ticket_status == "4" ? false : true}
+                          value="Feedback"
                           className={classes.button}
                         >
-                          {ticket?.appointment_date
-                            ? 'Date Setted'
-                            : ticket?.terms_approved
-                              ? "Set Ticket Date"
-                              : "Approve Terms"}
+                          Feedback
                         </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </Paper>
