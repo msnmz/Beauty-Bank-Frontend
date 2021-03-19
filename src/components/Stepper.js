@@ -29,22 +29,22 @@ const getSteps = () => {
 
 const getStepContent = (stepIndex) => {
     switch (stepIndex) {
-        case 0:
+        case '0':
             return "Our connector will call you...";
-        case 1:
+        case '1':
             return "Please, check your e-mail box and approve the terms.";
-        case 2:
+        case '2':
             return "Please, set your ticket date.";
-        case 3:
+        case '3':
             return "Please, don't forget your appointment!";
-        case 4:
+        case '4':
             return "Please, write feedback for better service...";
         default:
             return "There is a problem, please call us.";
     }
 };
 
-const Stepper = ({ activeStep = 0 }) => {
+const Stepper = ({ activeStep = '0' }) => {
     // constants
     const classes = useStyles();
     const steps = getSteps();
