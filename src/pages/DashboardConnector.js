@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import { Steps } from "../components/Index";
+// import { Steps } from "../components/Index";
 import { AppContext } from "../context/AppContext";
 import { LayoutConnector } from "../components/LayoutConnector";
 
@@ -109,7 +109,7 @@ const DashboardConnector = () => {
         {/* Stepper */}
         <Grid item xs={12}>
           <Paper className={fixedHeightPaper}>
-            <Steps />
+            {/* <Steps /> */}
           </Paper>
         </Grid>
         {/* Recent Orders */}

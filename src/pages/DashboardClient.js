@@ -109,7 +109,7 @@ const DashboardClient = () => {
         {/* Stepper */}
         <Grid item xs={12}>
           <Paper className={fixedHeightPaper}>
-            <Stepper activeStep={ticketsData[ticketsData.length - 1].ticket_status} />
+            <Stepper activeStep={ticketsData[ticketsData.length - 1]?.ticket_status} />
           </Paper>
         </Grid>
 
