@@ -77,4 +77,4 @@ const Stepper = ({ activeStep = '0' }) => {
     );
 };
 
-export default Stepper;
+export {Stepper};

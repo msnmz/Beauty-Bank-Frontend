@@ -26,7 +26,6 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import BookIcon from '@material-ui/icons/Book';
 import { TicketTable } from '../components/Index';
-import { Steps } from '../components/Index';
 
 const drawerWidth = 240;
 
@@ -193,7 +192,7 @@ const DashboardAdmin = () => {
                         {/* Stepper */}
                         <Grid item xs={12}>
                             <Paper className={fixedHeightPaper}>
-                                <Steps />
+                                {/* <Steps /> */}
                             </Paper>
                         </Grid>
                         {/* Recent Orders */}
