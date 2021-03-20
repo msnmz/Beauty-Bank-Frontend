@@ -7,6 +7,7 @@ import { TicketTable } from "../components/Index";
 import { Steps } from "../components/Index";
 import { AppContext } from "../context/AppContext";
 import { LayoutConnector } from "../components/LayoutConnector";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Modal from "@material-ui/core/Modal";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -14,6 +15,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
+import Pagination from "@material-ui/lab/Pagination";
 import { UserDetail } from "../components/UserDetail";
 
 const useStyles = makeStyles((theme) => ({
@@ -57,6 +59,8 @@ const ConnectorUserList = () => {
   const [userList, setUserList] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(null);
 
   const handleClick = (username) => {
     setOpen(true);
@@ -76,14 +80,15 @@ const ConnectorUserList = () => {
     };
 
     const response = await fetch(
-      `https://bbank-backend-app.herokuapp.com/auth/user-list/`,
+      `https://bbank-backend-app.herokuapp.com/auth/user-list/?page=${page}`,
       requestOptions
     );
     const data = await response.json();
     console.log(data);
+    setPageSize(Math.floor(data.count / 10));
 
     setUserList(data.results);
-  }, []);
+  }, [page, open]);
 
   const modalBody = (
     <div className={classes.paperModal}>
@@ -114,46 +119,66 @@ const ConnectorUserList = () => {
             >
               User List
             </Typography>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>User ID</TableCell>
-                  <TableCell>Username</TableCell>
-                  <TableCell>First Name</TableCell>
-                  <TableCell>Last Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Phone Number</TableCell>
-                  <TableCell>Gender</TableCell>
-                  <TableCell>Zip Code</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {userList?.map((user) => (
-                  <TableRow
-                    style={{ cursor: "pointer" }}
-                    hover
-                    key={user?.id}
-                    onClick={() => handleClick(user?.username)}
-                    className={classes.tableRow}
-                  >
-                    <TableCell>{user?.id}</TableCell>
-                    <TableCell>{user?.username}</TableCell>
-                    <TableCell>{user?.first_name}</TableCell>
-                    <TableCell>{user?.last_name}</TableCell>
-                    <TableCell>{user?.email}</TableCell>
-                    <TableCell>{user?.phone_number}</TableCell>
-                    <TableCell>
-                      {user?.gender == 0
-                        ? "Male"
-                        : user?.gender == 1
-                        ? "Female"
-                        : "-"}
-                    </TableCell>
-                    <TableCell>{user?.zip_address}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            {userList.length > 0 ? (
+              <>
+                <Pagination
+                  count={pageSize}
+                  color="secondary"
+                  onChange={(event, page) => setPage(page)}
+                />
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>User ID</TableCell>
+                      <TableCell>Username</TableCell>
+                      <TableCell>First Name</TableCell>
+                      <TableCell>Last Name</TableCell>
+                      <TableCell>Email</TableCell>
+                      <TableCell>Phone Number</TableCell>
+                      <TableCell>Gender</TableCell>
+                      <TableCell>Zip Code</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {userList?.map((user) => (
+                      <TableRow
+                        style={{ cursor: "pointer" }}
+                        hover
+                        key={user?.id}
+                        onClick={() => handleClick(user?.username)}
+                        className={classes.tableRow}
+                      >
+                        <TableCell>{user?.id}</TableCell>
+                        <TableCell>{user?.username}</TableCell>
+                        <TableCell>{user?.first_name}</TableCell>
+                        <TableCell>{user?.last_name}</TableCell>
+                        <TableCell>{user?.email}</TableCell>
+                        <TableCell>{user?.phone_number}</TableCell>
+                        <TableCell>
+                          {user?.gender == 0
+                            ? "Male"
+                            : user?.gender == 1
+                            ? "Female"
+                            : "-"}
+                        </TableCell>
+                        <TableCell>{user?.zip_address}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </>
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {" "}
+                <CircularProgress color="secondary" />
+              </div>
+            )}
           </Paper>
         </Grid>
       </Grid>
