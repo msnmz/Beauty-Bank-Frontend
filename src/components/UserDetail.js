@@ -8,7 +8,7 @@ import {
 } from "../components/Index";
 
 import axios from "axios";
-
+import CircularProgress from "@material-ui/core/CircularProgress";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
@@ -104,7 +104,7 @@ const useStyles = makeStyles((theme) => ({
 const UserDetail = ({ selectedUser, handleClose }) => {
   const classes = useStyles();
   const { user } = useContext(AppContext);
-  const [userData, setUserData] = useState([]);
+  const [userData, setUserData] = useState(null);
 
   useEffect(async () => {
     const requestOptions = {
@@ -123,12 +123,21 @@ const UserDetail = ({ selectedUser, handleClose }) => {
     console.log(data);
 
     setUserData(data);
-  }, [userData.username]);
+  }, [userData?.username]);
 
   return (
     <main className={classes.layout}>
       <Paper className={classes.paper}>
-        <Grid container spacing={3}>
+        <Grid
+          container
+          spacing={3}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+          }}
+        >
           {/* <Grid item xs={6} className={classes.profile_image}>
             <Avatar
               alt={userData?.email}
@@ -136,91 +145,116 @@ const UserDetail = ({ selectedUser, handleClose }) => {
               className={classes.large}
             />
           </Grid> */}
-          <Grid item xs={12}>
-            <Typography gutterBottom variant="h5" component="h2">
-              About me:
-            </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              {userData?.about_me}
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <TableContainer>
-              <Table
-                className={classes.table}
-                aria-label="a dense table"
-                size="small"
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell>{`${
-                      userData?.username?.charAt(0).toUpperCase() +
-                      userData?.username?.slice(1)
-                    }'s Profile`}</TableCell>
-                    <TableCell align="right"></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>Email</TableCell>
-                    <TableCell align="left">{userData?.email}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>First Name</TableCell>
-                    <TableCell align="left">{userData?.first_name}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Last Name</TableCell>
-                    <TableCell align="left">{userData?.last_name}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Gender</TableCell>
-                    <TableCell align="left">
-                      {userData?.gender == 1
-                        ? "Female"
-                        : userData?.gender == 2
-                        ? "Male"
-                        : "Other"}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Address</TableCell>
-                    <TableCell align="left">{userData?.address}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Zip Code</TableCell>
-                    <TableCell align="left">{userData?.zip_address}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Phone Number</TableCell>
-                    <TableCell align="left">{userData?.phone_number}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Phone Number 2</TableCell>
-                    <TableCell align="left">
-                      {userData?.phone_number2}
-                    </TableCell>
-                  </TableRow>
-                  {userData?.is_pro && (
-                    <>
+
+          {userData ? (
+            <>
+              <Grid item xs={12}>
+                <Typography gutterBottom variant="h5" component="h2">
+                  About me:
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                  {userData?.about_me}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <TableContainer>
+                  <Table
+                    className={classes.table}
+                    aria-label="a dense table"
+                    size="small"
+                  >
+                    <TableHead>
                       <TableRow>
-                        <TableCell>Company Name</TableCell>
+                        <TableCell>{`${
+                          userData?.username?.charAt(0).toUpperCase() +
+                          userData?.username?.slice(1)
+                        }'s Profile`}</TableCell>
+                        <TableCell align="right"></TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>Email</TableCell>
+                        <TableCell align="left">{userData?.email}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>First Name</TableCell>
                         <TableCell align="left">
-                          {userData?.company_name}
+                          {userData?.first_name}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell>Service Type</TableCell>
+                        <TableCell>Last Name</TableCell>
                         <TableCell align="left">
-                          {userData?.service_type}
+                          {userData?.last_name}
                         </TableCell>
                       </TableRow>
-                    </>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Grid>
+                      <TableRow>
+                        <TableCell>Gender</TableCell>
+                        <TableCell align="left">
+                          {userData?.gender == 1
+                            ? "Female"
+                            : userData?.gender == 2
+                            ? "Male"
+                            : "Other"}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Address</TableCell>
+                        <TableCell align="left">{userData?.address}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Zip Code</TableCell>
+                        <TableCell align="left">
+                          {userData?.zip_address}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Phone Number</TableCell>
+                        <TableCell align="left">
+                          {userData?.phone_number}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Phone Number 2</TableCell>
+                        <TableCell align="left">
+                          {userData?.phone_number2}
+                        </TableCell>
+                      </TableRow>
+                      {userData?.is_pro && (
+                        <>
+                          <TableRow>
+                            <TableCell>Company Name</TableCell>
+                            <TableCell align="left">
+                              {userData?.company_name}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>Service Type</TableCell>
+                            <TableCell align="left">
+                              {userData?.service_type}
+                            </TableCell>
+                          </TableRow>
+                        </>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+            </>
+          ) : (
+            <Grid
+              item
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+              }}
+            >
+              <CircularProgress color="secondary" />
+            </Grid>
+          )}
         </Grid>
       </Paper>
     </main>
