@@ -133,7 +133,7 @@ const DashboardClient = () => {
         {/* Stepper */}
         <Grid item xs={12}>
           <Paper className={fixedHeightPaper}>
-            <Stepper activeStep={ticketsData[0]?.ticket_status} />
+            <Stepper activeStep={Number(ticketsData[0]?.ticket_status)} />
           </Paper>
         </Grid>
 
@@ -159,28 +159,19 @@ const DashboardClient = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {ticketsData?.slice(0).map((ticket) => (
+                {ticketsData?.map((ticket) => (
                   <TableRow key={ticket.id}>
                     <TableCell>{ticket.id}</TableCell>
                     <TableCell>{FormatDate(ticket.created_at)}</TableCell>
-                    <TableCell>
-                      {ticket?.appointment_date
-                        ? FormatDateTime(ticket?.appointment_date)
-                        : "-"}
-                    </TableCell>
-                    <TableCell>
-                      {ticket?.appointment_date
-                        ? "Waiting"
-                        : ticket.is_pro_confirm
-                        ? "Confirmed"
-                        : "-"}
-                    </TableCell>
+                    <TableCell>{ticket?.appointment_date ? FormatDateTime(ticket?.appointment_date) : '-'}</TableCell>
+                    <TableCell>{ticket?.appointment_date ? 'Waiting' : ticket.is_pro_confirm ? 'Confirmed' : '-'}</TableCell>
                     <TableCell>
                       <Button
                         onClick={() => {
                           ticket?.appointment_date
                             ? alert("You already set the date!")
                             : handleOpenDate(ticket);
+
                         }}
                         variant="outlined"
                         color={
@@ -213,6 +204,7 @@ const DashboardClient = () => {
                         </Button>
                       )}
                     </TableCell>
+
                   </TableRow>
                 ))}
               </TableBody>
