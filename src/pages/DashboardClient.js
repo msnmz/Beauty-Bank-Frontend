@@ -15,7 +15,8 @@ import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
 import Modal from "@material-ui/core/Modal";
 
-import { FormatDate, FormatDateTime } from '../helper/FormatDate';
+import { FormatDate, FormatDateTime } from "../helper/FormatDate";
+import { SetTicketFeedback } from "../components/SetTicketFeedback";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     width: 150,
-  }
+  },
 }));
 
 const DashboardClient = () => {
@@ -55,6 +56,7 @@ const DashboardClient = () => {
   const [ticketsData, setTicketsData] = useState([]);
 
   const [open, setOpen] = useState(false);
+  const [openDate, setOpenDate] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState([]);
 
   useEffect(async () => {
@@ -73,9 +75,13 @@ const DashboardClient = () => {
     const data = await response.json();
 
     setTicketsData(data.results);
-    console.log('DATA: ', data.results);
-  }, [open]);
+    console.log("DATA: ", data.results);
+  }, [open, openDate]);
 
+  const handleOpenDate = (ticket) => {
+    setOpenDate(true);
+    setSelectedTicket(ticket);
+  };
   const handleOpen = (ticket) => {
     setOpen(true);
     setSelectedTicket(ticket);
@@ -83,6 +89,7 @@ const DashboardClient = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setOpenDate(false);
   };
 
   const modalBody = (
@@ -94,16 +101,33 @@ const DashboardClient = () => {
       />
     </div>
   );
+  const modalBodyFeedback = (
+    <div className={classes.paperModal}>
+      <h1 id="simple-modal-title">Set Ticket Feedback </h1>
+      <SetTicketFeedback
+        selectedTicket={selectedTicket}
+        handleClose={handleClose}
+      />
+    </div>
+  );
 
   return (
     <LayoutClient pageTitle="Dashboard">
+      <Modal
+        open={openDate}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {modalBody}
+      </Modal>
       <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
-        {modalBody}
+        {modalBodyFeedback}
       </Modal>
       <Grid container spacing={3}>
         {/* Stepper */}
@@ -146,7 +170,8 @@ const DashboardClient = () => {
                         onClick={() => {
                           ticket?.appointment_date
                             ? alert("You already set the date!")
-                            : handleOpen(ticket);
+                            : handleOpenDate(ticket);
+
                         }}
                         variant="outlined"
                         color={
@@ -157,12 +182,29 @@ const DashboardClient = () => {
                         className={classes.button}
                       >
                         {ticket?.appointment_date
-                          ? 'Date Setted'
+                          ? "Date Setted"
                           : ticket?.terms_approved
-                            ? "Set Ticket Date"
-                            : "Approve Terms"}
+                          ? "Set Ticket Date"
+                          : "Approve Terms"}
                       </Button>
                     </TableCell>
+                    <TableCell>
+                      {ticket?.ticket_status == "4" && (
+                        <Button
+                          onClick={() => {
+                            handleOpen(ticket);
+                          }}
+                          variant="outlined"
+                          color={"primary"}
+                          disabled={ticket?.ticket_status == "4" ? false : true}
+                          value="Feedback"
+                          className={classes.button}
+                        >
+                          Feedback
+                        </Button>
+                      )}
+                    </TableCell>
+
                   </TableRow>
                 ))}
               </TableBody>
