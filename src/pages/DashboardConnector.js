@@ -6,19 +6,19 @@ import Paper from "@material-ui/core/Paper";
 // import { Steps } from "../components/Index";
 import { AppContext } from "../context/AppContext";
 import { LayoutConnector } from "../components/LayoutConnector";
-
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
-
+import Pagination from "@material-ui/lab/Pagination";
 import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Modal";
-import { AssignPro } from '../components/Index'
+import { AssignPro } from "../components/Index";
 
-import {FormatDate, FormatDateTime} from '../helper/FormatDate'
+import { FormatDate, FormatDateTime } from "../helper/FormatDate";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -59,6 +59,8 @@ const DashboardConnector = () => {
   const [ticketsData, setTicketsData] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(null);
 
   useEffect(async () => {
     const requestOptions = {
@@ -70,14 +72,15 @@ const DashboardConnector = () => {
     };
 
     const response = await fetch(
-      `https://bbank-backend-app.herokuapp.com/ticket/ticket-list/`,
+      `https://bbank-backend-app.herokuapp.com/ticket/ticket-list/?page=${page}`,
       requestOptions
     );
     const data = await response.json();
+    console.log("DATA", data);
+    setPageSize(Math.floor(data.count / 10));
 
     setTicketsData(data.results);
-  }, [open]);
-
+  }, [open, page]);
 
   const handleOpen = (ticket) => {
     setOpen(true);
@@ -91,7 +94,7 @@ const DashboardConnector = () => {
   const modalBody = (
     <div className={classes.paperModal}>
       <h1 id="simple-modal-title">Assign Pro</h1>
-      <AssignPro selectedTicket={selectedTicket} handleClose={handleClose}/>
+      <AssignPro selectedTicket={selectedTicket} handleClose={handleClose} />
     </div>
   );
 
@@ -108,9 +111,7 @@ const DashboardConnector = () => {
       <Grid container spacing={3}>
         {/* Stepper */}
         <Grid item xs={12}>
-          <Paper className={fixedHeightPaper}>
-            {/* <Steps /> */}
-          </Paper>
+          <Paper className={fixedHeightPaper}>{/* <Steps /> */}</Paper>
         </Grid>
         {/* Recent Orders */}
         <Grid item xs={12}>
@@ -123,40 +124,67 @@ const DashboardConnector = () => {
             >
               All Tickets
             </Typography>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Ticket ID</TableCell>
-                  <TableCell>Owner</TableCell>
-                  <TableCell>Create Date</TableCell>
-                  <TableCell>Appointment Date</TableCell>
-                  <TableCell>Phone Number</TableCell>
-                  <TableCell>Assign Pro</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {ticketsData?.slice(0).reverse().map((ticket) => (
-                  <TableRow key={ticket.id}>
-                    <TableCell>{ticket.id}</TableCell>
-                    <TableCell>{`${ticket.owner.first_name} ${ticket.owner.last_name}`}</TableCell>
-                    <TableCell>{FormatDate(ticket.created_at)}</TableCell>
-                    <TableCell>{ticket?.appointment_date ? FormatDateTime(ticket?.appointment_date) : '-'}</TableCell>
-                    <TableCell>{ticket.phone_number}</TableCell>
-                    <TableCell>
-                      <Button
-                        onClick={() => {handleOpen(ticket)}}
-                        variant="outlined"
-                        color={ticket?.pro ? "primary" : "secondary"}
-                        value="Choose"
-                        className={classes.button}
-                      >
-                        {ticket?.pro ? "Pro Assigned" : "Assign Pro"}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+
+            {ticketsData.length > 0 ? (
+              <>
+                <Pagination
+                  count={pageSize}
+                  color="secondary"
+                  onChange={(event, page) => setPage(page)}
+                />
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Ticket ID</TableCell>
+                      <TableCell>Owner</TableCell>
+                      <TableCell>Create Date</TableCell>
+                      <TableCell>Appointment Date</TableCell>
+                      <TableCell>Phone Number</TableCell>
+                      <TableCell>Assign Pro</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {ticketsData?.slice(0).map((ticket) => (
+                      <TableRow key={ticket.id}>
+                        <TableCell>{ticket.id}</TableCell>
+                        <TableCell>{`${ticket.owner.first_name} ${ticket.owner.last_name}`}</TableCell>
+                        <TableCell>{FormatDate(ticket.created_at)}</TableCell>
+                        <TableCell>
+                          {ticket?.appointment_date
+                            ? FormatDateTime(ticket?.appointment_date)
+                            : "-"}
+                        </TableCell>
+                        <TableCell>{ticket.phone_number}</TableCell>
+                        <TableCell>
+                          <Button
+                            onClick={() => {
+                              handleOpen(ticket);
+                            }}
+                            variant="outlined"
+                            color={ticket?.pro ? "primary" : "secondary"}
+                            value="Choose"
+                            className={classes.button}
+                          >
+                            {ticket?.pro ? "Pro Assigned" : "Assign Pro"}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </>
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {" "}
+                <CircularProgress color="secondary" />
+              </div>
+            )}
           </Paper>
         </Grid>
       </Grid>
