@@ -109,7 +109,7 @@ const DashboardClient = () => {
         {/* Stepper */}
         <Grid item xs={12}>
           <Paper className={fixedHeightPaper}>
-            <Stepper activeStep={ticketsData[ticketsData.length - 1]?.ticket_status} />
+            <Stepper activeStep={Number(ticketsData[0]?.ticket_status)} />
           </Paper>
         </Grid>
 
@@ -135,39 +135,36 @@ const DashboardClient = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {ticketsData
-                  ?.slice(0)
-                  .reverse()
-                  .map((ticket) => (
-                    <TableRow key={ticket.id}>
-                      <TableCell>{ticket.id}</TableCell>
-                      <TableCell>{FormatDate(ticket.created_at)}</TableCell>
-                      <TableCell>{ticket?.appointment_date ? FormatDateTime(ticket?.appointment_date) : '-'}</TableCell>
-                      <TableCell>{ticket?.appointment_date ? 'Waiting' : ticket.is_pro_confirm ? 'Confirmed' : '-'}</TableCell>
-                      <TableCell>
-                        <Button
-                          onClick={() => {
-                            ticket?.appointment_date
-                              ? alert("You already set the date!")
-                              : handleOpen(ticket);
-                          }}
-                          variant="outlined"
-                          color={
-                            ticket?.appointment_date ? "primary" : "secondary"
-                          }
-                          disabled={ticket?.terms_approved ? false : true}
-                          value="Confirm"
-                          className={classes.button}
-                        >
-                          {ticket?.appointment_date
-                            ? 'Date Setted'
-                            : ticket?.terms_approved
-                              ? "Set Ticket Date"
-                              : "Approve Terms"}
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                {ticketsData?.map((ticket) => (
+                  <TableRow key={ticket.id}>
+                    <TableCell>{ticket.id}</TableCell>
+                    <TableCell>{FormatDate(ticket.created_at)}</TableCell>
+                    <TableCell>{ticket?.appointment_date ? FormatDateTime(ticket?.appointment_date) : '-'}</TableCell>
+                    <TableCell>{ticket?.appointment_date ? 'Waiting' : ticket.is_pro_confirm ? 'Confirmed' : '-'}</TableCell>
+                    <TableCell>
+                      <Button
+                        onClick={() => {
+                          ticket?.appointment_date
+                            ? alert("You already set the date!")
+                            : handleOpen(ticket);
+                        }}
+                        variant="outlined"
+                        color={
+                          ticket?.appointment_date ? "primary" : "secondary"
+                        }
+                        disabled={ticket?.terms_approved ? false : true}
+                        value="Confirm"
+                        className={classes.button}
+                      >
+                        {ticket?.appointment_date
+                          ? 'Date Setted'
+                          : ticket?.terms_approved
+                            ? "Set Ticket Date"
+                            : "Approve Terms"}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </Paper>
