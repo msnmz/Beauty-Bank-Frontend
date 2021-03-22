@@ -1,66 +1,40 @@
-import React, { useState, useEffect, useContext } from "react";
-import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-// import { Steps } from "../components/Index";
-import { AppContext } from "../context/AppContext";
 import { LayoutConnector } from "../components/LayoutConnector";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Typography from "@material-ui/core/Typography";
-import Pagination from "@material-ui/lab/Pagination";
-import Button from "@material-ui/core/Button";
-import Modal from "@material-ui/core/Modal";
+
 import { AssignPro } from "../components/Index";
 
-import { FormatDate, FormatDateTime } from "../helper/FormatDate";
-
-const useStyles = makeStyles((theme) => ({
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  },
-  paper: {
-    padding: theme.spacing(2),
-    display: "flex",
-    flexDirection: "column",
-    marginBottom: theme.spacing(10),
-  },
-  fixedHeight: {
-    height: 240,
-  },
-  paperModal: {
-    position: "absolute",
-    top: "15vh",
-    left: "35vw",
-    width: 700,
-    height: 650,
-    backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-  },
-  button: {
-    width: 150,
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   container: {
+//     paddingTop: theme.spacing(4),
+//     paddingBottom: theme.spacing(4),
+//   },
+//   paper: {
+//     padding: theme.spacing(2),
+//     display: "flex",
+//     flexDirection: "column",
+//     marginBottom: theme.spacing(10),
+//   },
+//   fixedHeight: {
+//     height: 240,
+//   },
+//   paperModal: {
+//     position: "absolute",
+//     top: "15vh",
+//     left: "35vw",
+//     width: 700,
+//     height: 650,
+//     backgroundColor: theme.palette.background.paper,
+//     border: "2px solid #000",
+//     boxShadow: theme.shadows[5],
+//     padding: theme.spacing(2, 4, 3),
+//   },
+//   button: {
+//     width: 150,
+//   },
+// }));
 
 const DashboardConnector = () => {
-  const classes = useStyles();
 
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-
-  const { user, setUser, userProfile, setUserProfile } = useContext(AppContext);
-  const [ticketsData, setTicketsData] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [selectedTicket, setSelectedTicket] = useState([]);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(null);
+  
 
   useEffect(async () => {
     const requestOptions = {

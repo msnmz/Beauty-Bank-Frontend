@@ -1,32 +1,19 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
+
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Drawer from "@material-ui/core/Drawer";
-import Container from "@material-ui/core/Container";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import PostAddIcon from "@material-ui/icons/PostAdd";
-import BookIcon from "@material-ui/icons/Book";
-import AccountBoxIcon from "@material-ui/icons/AccountBox";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
-import { AppContext } from "../context/AppContext";
-import Avatar from "@material-ui/core/Avatar";
+import {CssBaseline, Drawer, 
+  Container, AppBar, Toolbar, 
+  List, Typography, Divider,  Avatar, IconButton, Menu as MenuIcon} from "@material-ui/core";
+import {ChevronLeft as ChevronLeftIcon,
+   AccountBox as AccountBoxIcon, ExitToApp as ExitToAppIcon} from "@material-ui/icons";
 
-const drawerWidth = 240;
+import LayoutListItem from './ListItem'
+import { AppContext } from "context/AppContext";
+import {theme} from '../../config'
+
+const {drawer} = theme
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,8 +37,8 @@ const useStyles = makeStyles((theme) => ({
     }),
   },
   appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawer.width,
+    width: `calc(100% - ${drawer.width}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -69,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     position: "relative",
     whiteSpace: "nowrap",
-    width: drawerWidth,
+    width: drawer.width,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -95,7 +82,6 @@ const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
-    overflow: "hidden",
   },
   small: {
     width: theme.spacing(5),
@@ -104,28 +90,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LayoutConnector = ({ children, pageTitle }) => {
+const Layout = ({ children, pageTitle, list }) => {
   // constants
   const classes = useStyles();
   const history = useHistory();
   const { user, setUser, userProfile } = useContext(AppContext);
 
   // states
-  const [open, setOpen] = useState(false);
-
-  // Side Menu Functions
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Log Out
   const handleLogOut = () => {
     setUser(null);
-    localStorage.setItem("user", null);
+    localStorage.removeItem("user");
     history.push("/login");
   };
 
@@ -136,17 +113,17 @@ const LayoutConnector = ({ children, pageTitle }) => {
       {/* AppBar */}
       <AppBar
         position="absolute"
-        className={clsx(classes.appBar, open && classes.appBarShift)}
+        className={clsx(classes.appBar, isDrawerOpen && classes.appBarShift)}
       >
         <Toolbar className={classes.toolbar}>
           <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
+            onClick={() => setIsDrawerOpen(true)}
             className={clsx(
               classes.menuButton,
-              open && classes.menuButtonHidden
+              isDrawerOpen && classes.menuButtonHidden
             )}
           >
             <MenuIcon />
@@ -185,39 +162,26 @@ const LayoutConnector = ({ children, pageTitle }) => {
       <Drawer
         variant="permanent"
         classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+          paper: clsx(classes.drawerPaper, !isDrawerOpen && classes.drawerPaperClose),
         }}
-        open={open}
+        open={isDrawerOpen}
       >
         <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={() => setIsDrawerOpen(false)}>
             <ChevronLeftIcon />
           </IconButton>
         </div>
         <Divider />
         <List>
           <div>
-            <ListItem button onClick={() => history.push("/connector")}>
-              <ListItemIcon>
-                <DashboardIcon color="primary" />
-              </ListItemIcon>
-              <ListItemText primary="Dashboard" />
-            </ListItem>
-            <ListItem button onClick={() => history.push("/connector-profile")}>
-              <ListItemIcon>
-                <AccountCircle color="primary" />
-              </ListItemIcon>
-              <ListItemText primary="Profile" />
-            </ListItem>
-            <ListItem
-              button
-              onClick={() => history.push("/connector-user-list")}
-            >
-              <ListItemIcon>
-                <PeopleAltIcon color="primary" />
-              </ListItemIcon>
-              <ListItemText primary="User List" />
-            </ListItem>
+            {
+              list.map(listItem => (
+                <LayoutListItem key={listItem.title} title={listItem.title} onClick={listItem.onClick}>
+                  {listItem.icon}
+                </LayoutListItem>
+                )
+              )
+            }
           </div>
         </List>
       </Drawer>
@@ -233,4 +197,4 @@ const LayoutConnector = ({ children, pageTitle }) => {
   );
 };
 
-export { LayoutConnector };
+export default Layout;
