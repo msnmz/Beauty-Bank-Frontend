@@ -10,10 +10,10 @@ import {ChevronLeft as ChevronLeftIcon,
    AccountBox as AccountBoxIcon, ExitToApp as ExitToAppIcon} from "@material-ui/icons";
 
 import LayoutListItem from './ListItem'
-import { AppContext } from "context/AppContext";
-import {theme} from '../../config'
+import { AppContext } from "../../context/AppContext";
+import config from '../../config'
 
-const {drawer} = theme
+const {theme:{drawer}} = config
 
 const useStyles = makeStyles((theme) => ({
   root: {

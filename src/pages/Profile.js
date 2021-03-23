@@ -5,7 +5,7 @@ import {
   LayoutConnector,
   LayoutProfessional,
   LayoutSponsor,
-} from "../components/Index";
+} from "../views";
 
 import axios from 'axios';
 

@@ -44,7 +44,7 @@ const getStepContent = (stepIndex) => {
     }
 };
 
-const Stepper = ({ activeStep = 0 }) => {
+export const Stepper = ({ activeStep = 0 }) => {
     // constants
     const classes = useStyles();
     const steps = getSteps();
@@ -76,5 +76,3 @@ const Stepper = ({ activeStep = 0 }) => {
         </div>
     );
 };
-
-export { Stepper };

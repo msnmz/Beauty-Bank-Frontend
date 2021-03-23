@@ -1,23 +1,15 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Grid, Paper, makeStyles } from "@material-ui/core";
-import {SetTicketDate, Stepper } from "../components/Index";
-import clsx from "clsx";
-import { AppContext } from "../context/AppContext";
-import {LayoutClient} from '../views'
+import React, {useState, useEffect} from 'react'
+import {useSnackbar} from 'notistack'
 
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Typography from "@material-ui/core/Typography";
+import {makeStyles, Button} from '@material-ui/core'
 
-import Button from "@material-ui/core/Button";
-import { useHistory } from "react-router-dom";
-import Modal from "@material-ui/core/Modal";
+import {Dashboard} from '../components/Dashboard'
+import {LayoutClient} from '../views/LayoutClient'
+import { FormatDate, FormatDateTime } from '../helper/FormatDate'
+import {SetTicketDate} from '../components/SetTicketDate'
+import {SetTicketFeedback} from '../components/SetTicketFeedback'
 
-import { FormatDate, FormatDateTime } from "../helper/FormatDate";
-import { SetTicketFeedback } from "../components/SetTicketFeedback";
+import api from '../api'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -47,174 +39,101 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DashboardClient = () => {
-  const classes = useStyles();
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-  const history = useHistory();
+export const DashboardClient = () => {
+  const classes = useStyles()
+  const {enqueueSnackbar} = useSnackbar()
 
-  const { user } = useContext(AppContext);
+  const [open, setOpen] = useState(false)
+  const [openDate, setOpenDate] = useState(false)
+  const [selectedTicket, setSelectedTicket] = useState([])
+  const [tickets, setTickets] = useState([])
 
-  const [ticketsData, setTicketsData] = useState([]);
-
-  const [open, setOpen] = useState(false);
-  const [openDate, setOpenDate] = useState(false);
-  const [selectedTicket, setSelectedTicket] = useState([]);
-
-  useEffect(async () => {
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user?.tokens?.access}`,
-      },
-    };
-
-    const response = await fetch(
-      `https://bbank-backend-app.herokuapp.com/ticket/ticket-list/`,
-      requestOptions
-    );
-    const data = await response.json();
-
-    setTicketsData(data.results);
-    console.log("DATA: ", data.results);
-  }, [open, openDate]);
 
   const handleOpenDate = (ticket) => {
-    setOpenDate(true);
-    setSelectedTicket(ticket);
-  };
+    setOpenDate(true)
+    setSelectedTicket(ticket)
+  }
+
   const handleOpen = (ticket) => {
-    setOpen(true);
-    setSelectedTicket(ticket);
+    setOpen(true)
+    setSelectedTicket(ticket)
   };
 
   const handleClose = () => {
-    setOpen(false);
-    setOpenDate(false);
-  };
+    setOpen(false)
+    setOpenDate(false)
+  }
 
-  const modalBody = (
-    <div className={classes.paperModal}>
-      <h1 id="simple-modal-title">Set Ticket Date</h1>
-      <SetTicketDate
-        selectedTicket={selectedTicket}
-        handleClose={handleClose}
+  useEffect(() => {
+    api.get('ticket/ticket-list/').then(({data}) => {
+      setTickets(data.results)
+    }).catch(err => enqueueSnackbar(err.message, {variant: 'error'}))
+  }, [open, openDate])
+
+  const dateParams = {selectedTicket, handleClose}
+  const modalParams = {open, onModalClose: handleClose}
+
+  return <Dashboard
+          Layout={LayoutClient}
+          classes={classes}
+          tickets={tickets}
+          hasStepper={true}
+          modals={[
+            {
+              title: "Set Ticket Date",
+              content: <SetTicketDate {...dateParams} />,
+              ...modalParams
+            },
+            {
+              title: "Set Ticket Feedback",
+              content: <SetTicketFeedback {...dateParams} />,
+              ...modalParams,
+              open: openDate
+            },
+          ]}
+          list={{
+            title: "My Tickets",
+            headers: [
+            "Ticket ID",
+            "Create Date",
+            "Appointment Date",
+            "Pro Confirm",
+            "Approve&Set Date"],
+            body: [
+              t => t.id,
+              t => FormatDate(t.created_at),
+              t => t?.appointment_date ? FormatDateTime(t.appointment_date) : '-',
+              t => t?.appointment_date ? 'Waiting' : t.is_pro_confirm ? 'Confirmed' : '-',
+              t => <Button
+                    onClick={() => {t?.appointment_date
+                        ? alert("You already set the date!")
+                        : handleOpenDate(t);
+                    }}
+                    variant="outlined"
+                    color={t?.appointment_date ? "primary" : "secondary"}
+                    disabled={!t?.terms_approved}
+                    value="Confirm"
+                    className={classes.button}
+                  >
+                    {t?.appointment_date
+                      ? "Date Setted"
+                      : t?.terms_approved
+                      ? "Set Ticket Date"
+                      : "Approve Terms"}
+                  </Button>,
+              t => t?.ticket_status === "4" && (
+                  <Button
+                    onClick={() => handleOpen(t)}
+                    variant="outlined"
+                    color={"primary"}
+                    disabled={t?.ticket_status === "4" ? false : true}
+                    value="Feedback"
+                    className={classes.button}
+                  >
+                    Feedback
+                  </Button>
+              )
+            ]
+          }}
       />
-    </div>
-  );
-  const modalBodyFeedback = (
-    <div className={classes.paperModal}>
-      <h1 id="simple-modal-title">Set Ticket Feedback </h1>
-      <SetTicketFeedback
-        selectedTicket={selectedTicket}
-        handleClose={handleClose}
-      />
-    </div>
-  );
-
-  return (
-    <LayoutClient pageTitle="Dashboard">
-      <Modal
-        open={openDate}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-        {modalBody}
-      </Modal>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-        {modalBodyFeedback}
-      </Modal>
-      <Grid container spacing={3}>
-        {/* Stepper */}
-        <Grid item xs={12}>
-          <Paper className={fixedHeightPaper}>
-            <Stepper activeStep={Number(ticketsData[0]?.ticket_status)} />
-          </Paper>
-        </Grid>
-
-        {/* Recent Orders */}
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            <Typography
-              component="h2"
-              variant="h6"
-              color="secondary"
-              gutterBottom
-            >
-              My Tickets
-            </Typography>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Ticket ID</TableCell>
-                  <TableCell>Create Date</TableCell>
-                  <TableCell>Appointment Date</TableCell>
-                  <TableCell>Pro Confirm</TableCell>
-                  <TableCell>Approve&Set Date</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {ticketsData?.map((ticket) => (
-                  <TableRow key={ticket.id}>
-                    <TableCell>{ticket.id}</TableCell>
-                    <TableCell>{FormatDate(ticket.created_at)}</TableCell>
-                    <TableCell>{ticket?.appointment_date ? FormatDateTime(ticket?.appointment_date) : '-'}</TableCell>
-                    <TableCell>{ticket?.appointment_date ? 'Waiting' : ticket.is_pro_confirm ? 'Confirmed' : '-'}</TableCell>
-                    <TableCell>
-                      <Button
-                        onClick={() => {
-                          ticket?.appointment_date
-                            ? alert("You already set the date!")
-                            : handleOpenDate(ticket);
-
-                        }}
-                        variant="outlined"
-                        color={
-                          ticket?.appointment_date ? "primary" : "secondary"
-                        }
-                        disabled={ticket?.terms_approved ? false : true}
-                        value="Confirm"
-                        className={classes.button}
-                      >
-                        {ticket?.appointment_date
-                          ? "Date Setted"
-                          : ticket?.terms_approved
-                          ? "Set Ticket Date"
-                          : "Approve Terms"}
-                      </Button>
-                    </TableCell>
-                    <TableCell>
-                      {ticket?.ticket_status == "4" && (
-                        <Button
-                          onClick={() => {
-                            handleOpen(ticket);
-                          }}
-                          variant="outlined"
-                          color={"primary"}
-                          disabled={ticket?.ticket_status == "4" ? false : true}
-                          value="Feedback"
-                          className={classes.button}
-                        >
-                          Feedback
-                        </Button>
-                      )}
-                    </TableCell>
-
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Paper>
-        </Grid>
-      </Grid>
-    </LayoutClient>
-  );
-};
-
-export { DashboardClient };
+}
