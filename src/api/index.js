@@ -14,4 +14,8 @@ api.interceptors.request.use(request => {
   return request
 }, error => error)
 
+api.interceptors.response.use(response => response.data, error => Promise.reject(error))
+
 export default api
+export * from './user'
+export * from './error'

@@ -21,7 +21,15 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     container: {
-        margin: theme.spacing(0, 20),
+        padding: theme.spacing(20, 0),
+        height: '100vh',
+        justifyContent: 'center',
+        [theme.breakpoints.down('sm')]: {
+            padding: theme.spacing(5, 5),
+          },
+          [theme.breakpoints.up('md')]: {
+            padding: theme.spacing(10, 10),
+          },
     },
     cardHeader: {
         backgroundColor:
@@ -38,7 +46,7 @@ const items = [
     {
         title: 'Client',
         price: '0',
-        description: ['U kunt onder de verzekering van onze stichting terecht voor een goede service.'],
+        description: [' U kunt onder  de verzekering van  onze stichting terecht    voor een goede service. Alstublieft!'],
         buttonText: "That's me!",
         buttonVariant: 'outlined',
         imageURL: '../images/client.jpg',
@@ -84,33 +92,15 @@ const SignupMenu = () => {
     const history = useHistory();
 
     const handleClick = (event) => {
-
         history.push(`/register/${event.currentTarget.value.toLowerCase()}`)
-        // switch (event.currentTarget.value) {
-        //     case 'Volunteer':
-        //         history.push('/signup-volunteer');
-        //         break;
-        //     case 'Professional':
-        //         history.push('/signup-professional');
-        //         break;
-        //     case 'Sponsor':
-        //         history.push('/signup-sponsor');
-        //         break;
-        //     case 'Client':
-        //         history.push('/signup-client');
-        //         break;
-        //     default:
-        //         break;
-        // }
     }
 
     return (
-        <>
-            <Container maxWidth="lg" component="main">
-                <Grid container spacing={5} alignItems="flex-end" pt={3}>
+            <Container maxWidth="lg" style={{height: "100vh"}}>
+                <Grid container spacing={5} className={classes.container}>
                     {items.map((item) => (
                         // Enterprise card is full width at sm breakpoint
-                        <Grid item key={item.title} xs={12} sm={6} md={3}>
+                        <Grid item key={item.title} xs={12} sm={6} md={3} alignItems="center" style={{display: 'flex'}}>
                             <Card>
                                 <CardHeader
                                     title={item.title}
@@ -151,7 +141,6 @@ const SignupMenu = () => {
                     ))}
                 </Grid>
             </Container>
-        </>
     );
 }
 

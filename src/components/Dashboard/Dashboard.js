@@ -7,12 +7,12 @@ import {Stepper} from "../Stepper"
 import {List} from './List'
 
 
-export const Dashboard = ({Layout, classes, tickets, modals, hasStepper, list, pagination}) => {
+export const Dashboard = ({Layout, classes, tickets, modals, hasStepper, list, pagination, loading}) => {
   const fixedHeightPaper = hasStepper ? clsx(classes.paper, classes.fixedHeight) : 0
 
   return (
     <Layout pageTitle="Dashboard">
-      {modals.map((modal, idx) =>
+      {modals.map(modal =>
       (<Modal
         key={modal.title}
         open={modal.open}
@@ -45,15 +45,15 @@ export const Dashboard = ({Layout, classes, tickets, modals, hasStepper, list, p
             >
               {list.title}
             </Typography>
-            {tickets.length && <List list={list} tickets={tickets} pagination={pagination} />}
-            {!tickets.length && <div
+            {!loading && tickets.length > 0 && <List list={list} tickets={tickets} pagination={pagination} />}
+            {!loading && !tickets.length && <Typography>No tickets to list!</Typography>}
+            {loading && <div
                 style={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                {" "}
                 <CircularProgress color="secondary" />
               </div>}
           </Paper>

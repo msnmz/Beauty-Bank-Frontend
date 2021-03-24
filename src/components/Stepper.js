@@ -40,7 +40,7 @@ const getStepContent = (stepIndex) => {
         case 4:
             return "Please, write feedback for better service...";
         default:
-            return "There is a problem, please call us.";
+            return "There is a problem, please contact us.";
     }
 };
 

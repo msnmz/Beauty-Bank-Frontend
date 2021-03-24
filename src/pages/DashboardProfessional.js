@@ -30,22 +30,27 @@ export const DashboardProfessional = () => {
   const {enqueueSnackbar} = useSnackbar()
 
   const [tickets, setTickets] = useState([])
+  const [loading, setLoading] = useState(true)
+
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(null);
 
   useEffect(() => {
-    api.get(`ticket/ticket-list/?page=${page}`).then(({data}) => {
+    api.get(`ticket/ticket-list/?page=${page}`).then(data => {
       setTickets(data.results)
       // TODO: pageSize from backend
       setPageSize(Math.floor(data.count / 10))
     }).catch(err => enqueueSnackbar(err.message, {variant: 'error'}))
+    .finally(() => setLoading(false))
+
   }, [page])
 
   return <Dashboard
           Layout={LayoutProfessional}
           classes={classes}
           tickets={tickets}
+          loading={loading}
           pagination={{pageSize, setPage}}
           modals={[]}
           list={{

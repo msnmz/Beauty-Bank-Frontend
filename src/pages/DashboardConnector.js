@@ -46,6 +46,7 @@ export const DashboardConnector = () => {
 
   const [open, setOpen] = useState(false)
   const [selectedTicket, setSelectedTicket] = useState([])
+  const [loading, setLoading] = useState(true)
   const [tickets, setTickets] = useState([])
 
   const [page, setPage] = useState(1);
@@ -61,11 +62,13 @@ export const DashboardConnector = () => {
   }
 
   useEffect(() => {
-    api.get(`ticket/ticket-list/?page=${page}`).then(({data}) => {
+    api.get(`ticket/ticket-list/?page=${page}`).then(data => {
       setTickets(data.results)
       // TODO: pageSize from backend
       setPageSize(Math.floor(data.count / 10))
     }).catch(err => enqueueSnackbar(err.message, {variant: 'error'}))
+    .finally(() => setLoading(false))
+
   }, [open, page])
 
   const dateParams = {selectedTicket, handleClose}
@@ -75,6 +78,7 @@ export const DashboardConnector = () => {
           Layout={LayoutConnector}
           classes={classes}
           tickets={tickets}
+          loading={loading}
           pagination={{pageSize, setPage}}
           modals={[
             {

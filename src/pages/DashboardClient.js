@@ -45,6 +45,7 @@ export const DashboardClient = () => {
 
   const [open, setOpen] = useState(false)
   const [openDate, setOpenDate] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [selectedTicket, setSelectedTicket] = useState([])
   const [tickets, setTickets] = useState([])
 
@@ -65,30 +66,32 @@ export const DashboardClient = () => {
   }
 
   useEffect(() => {
-    api.get('ticket/ticket-list/').then(({data}) => {
+    api.get('ticket/ticket-list/').then(data => {
       setTickets(data.results)
     }).catch(err => enqueueSnackbar(err.message, {variant: 'error'}))
+    .finally(() => setLoading(false))
   }, [open, openDate])
 
   const dateParams = {selectedTicket, handleClose}
-  const modalParams = {open, onModalClose: handleClose}
 
   return <Dashboard
           Layout={LayoutClient}
+          loading={loading}
           classes={classes}
           tickets={tickets}
           hasStepper={true}
           modals={[
             {
-              title: "Set Ticket Date",
+              title: "Set Appointment Date",
               content: <SetTicketDate {...dateParams} />,
-              ...modalParams
+              open: openDate,
+              onModalClose: handleClose
             },
             {
-              title: "Set Ticket Feedback",
+              title: "Set Appointment Feedback",
               content: <SetTicketFeedback {...dateParams} />,
-              ...modalParams,
-              open: openDate
+              open: open,
+              onModalClose: handleClose
             },
           ]}
           list={{
