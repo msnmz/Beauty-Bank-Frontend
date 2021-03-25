@@ -28,8 +28,9 @@ import axios from "axios";
 const useStyles = makeStyles((theme) => ({
   layout: {
     width: "auto",
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
+    display: "flex",
+    alignItems: 'center',
+    height: '100vh',
     [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
       width: 600,
       marginLeft: "auto",

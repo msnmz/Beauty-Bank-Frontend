@@ -9,7 +9,7 @@ import {
   Typography,
   Button,
 } from "@material-ui/core";
-import { LayoutClient } from "../components/Index";
+import { LayoutClient } from "../views";
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";

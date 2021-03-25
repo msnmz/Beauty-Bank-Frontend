@@ -1,19 +1,13 @@
-import React, {useState, useEffect, useContext} from "react";
-import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
-import { AppContext } from "../context/AppContext";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { Steps } from "../components/Index";
-import { LayoutProfessional } from "../components/Index";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import {FormatDate, FormatDateTime} from '../helper/FormatDate'
+import React, {useState, useEffect} from 'react'
+import {useSnackbar} from 'notistack'
 
+import {makeStyles} from '@material-ui/core'
+
+import {Dashboard} from '../components/Dashboard'
+import {LayoutProfessional} from '../views'
+import { FormatDate, FormatDateTime } from '../helper/FormatDate'
+
+import api from '../api'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -31,74 +25,50 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DashboardProfessional = () => {
-  const classes = useStyles();
-  const { user } = useContext(AppContext);
-  const [ticketsData, setTicketsData] = useState();
+export const DashboardProfessional = () => {
+  const classes = useStyles()
+  const {enqueueSnackbar} = useSnackbar()
 
-  useEffect(async () => {
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user?.tokens?.access}`,
-      },
-    };
+  const [tickets, setTickets] = useState([])
+  const [loading, setLoading] = useState(true)
 
-    const response = await fetch(
-      `https://bbank-backend-app.herokuapp.com/ticket/ticket-list/`,
-      requestOptions
-    );
-    
-    const data = await response.json();
 
-    if(response?.status==200){
-        setTicketsData(data.results);
-    }
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(null);
 
-  }, [user]);
+  useEffect(() => {
+    api.get(`ticket/ticket-list/?page=${page}`).then(data => {
+      setTickets(data.results)
+      // TODO: pageSize from backend
+      setPageSize(Math.floor(data.count / 10))
+    }).catch(err => enqueueSnackbar(err.message, {variant: 'error'}))
+    .finally(() => setLoading(false))
 
-  return (
-    <LayoutProfessional pageTitle="Dashboard">
-      <Grid container spacing={3}>
-        {/* Recent Orders */}
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            <Typography
-              component="h2"
-              variant="h6"
-              color="secondary"
-              gutterBottom
-            >
-               Tickets Assigned to Me
-            </Typography>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Ticket ID</TableCell>
-                  <TableCell>Owner</TableCell>
-                  <TableCell>Create Date</TableCell>
-                  <TableCell>Appointment Date</TableCell>
-                  <TableCell>Phone Number</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {ticketsData?.slice(0)?.reverse()?.map((ticket) => (
-                  <TableRow key={ticket.id}>
-                    <TableCell>{ticket.id}</TableCell>
-                    <TableCell>{`${ticket.owner.first_name} ${ticket.owner.last_name}`}</TableCell>
-                    <TableCell>{FormatDate(ticket.created_at)}</TableCell>
-                    <TableCell>{ticket?.appointment_date ? FormatDateTime(ticket?.appointment_date) : '-'}</TableCell>
-                    <TableCell>{ticket.phone_number}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Paper>
-        </Grid>
-      </Grid>
-    </LayoutProfessional>
-  );
-};
+  }, [page])
 
-export { DashboardProfessional };
+  return <Dashboard
+          Layout={LayoutProfessional}
+          classes={classes}
+          tickets={tickets}
+          loading={loading}
+          pagination={{pageSize, setPage}}
+          modals={[]}
+          list={{
+            title: "Tickets Assigned to Me",
+            headers: [
+            "Ticket ID",
+            "Owner",
+            "Create Date",
+            "Appointment Date",
+            "Phone Number"
+          ],
+            body: [
+              t => t.id,
+              t => `${t.owner.first_name} ${t.owner.last_name}`,
+              t => FormatDate(t.created_at),
+              t => t?.appointment_date ? FormatDateTime(t.appointment_date) : '-',
+              t => t.phone_number,
+            ]
+          }}
+      />
+}
