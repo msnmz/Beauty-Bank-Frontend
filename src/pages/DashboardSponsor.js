@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { TicketTable } from "../components/Index";
-import { LayoutSponsor } from "../components/Index";
+import { LayoutSponsor } from "../views";
 
 
 const useStyles = makeStyles((theme) => ({

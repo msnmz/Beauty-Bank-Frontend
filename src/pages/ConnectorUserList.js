@@ -6,7 +6,7 @@ import Paper from "@material-ui/core/Paper";
 import { TicketTable } from "../components/Index";
 import { Steps } from "../components/Index";
 import { AppContext } from "../context/AppContext";
-import { LayoutConnector } from "../components/LayoutConnector";
+import { LayoutConnector } from "../views";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Modal from "@material-ui/core/Modal";
 import Table from "@material-ui/core/Table";

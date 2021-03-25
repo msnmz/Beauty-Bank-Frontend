@@ -40,11 +40,11 @@ const getStepContent = (stepIndex) => {
         case 4:
             return "Please, write feedback for better service...";
         default:
-            return "There is a problem, please call us.";
+            return "There is a problem, please contact us.";
     }
 };
 
-const Stepper = ({ activeStep = 0 }) => {
+export const Stepper = ({ activeStep = 0 }) => {
     // constants
     const classes = useStyles();
     const steps = getSteps();
@@ -76,5 +76,3 @@ const Stepper = ({ activeStep = 0 }) => {
         </div>
     );
 };
-
-export { Stepper };

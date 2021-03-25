@@ -1,15 +1,14 @@
 import React, { useState, useContext } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { toast } from "react-toastify";
+import {useSnackbar} from 'notistack'
 import {
   Avatar,
   Button,
   TextField,
   FormControlLabel,
   Checkbox,
-  Link,
   Grid,
   Typography,
   Container,
@@ -20,8 +19,8 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import Request from "../services/Request";
 import { AppContext } from "../context/AppContext";
+import api, {UserRoles, handleError} from '../api'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -50,6 +49,7 @@ const Signin = () => {
   const classes = useStyles();
   const history = useHistory();
   const { setUser } = useContext(AppContext);
+  const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
   // states
   const [isShowPassword, setIsShowPassword] = useState(false);
@@ -73,40 +73,12 @@ const Signin = () => {
   // handleSubmit
   const onSubmit = (values) => {
     setLoading(true);
-    Request.postData(
-      "https://bbank-backend-app.herokuapp.com/auth/login/",
-      values
-    )
-      .then((response) => {
-        console.log(typeof response.role);
-        console.log(response.role);
-
-        setUser(response);
-        localStorage.setItem("user", JSON.stringify(response));
-
-        switch (response.role) {
-          case "Client":
-            history.push("/client");
-            break;
-          case "Connector":
-            history.push("/connector");
-            break;
-          case "Pro":
-            history.push("/professional");
-            break;
-          case "Sponsor":
-            history.push("/sponsor");
-            break;
-          case "Admin":
-            history.push("/admin");
-            break;
-          default:
-            history.push("/login");
-        }
-      })
-      .catch((error) => {
-        toast(error.message || "An error occured");
-      });
+    console.log({values})
+    api.post('/auth/login/', values).then(data => {
+      setUser(data)
+      localStorage.setItem("user", JSON.stringify(data))
+      history.push(UserRoles[data.role]?.path ?? '/login')
+    }).catch(handleError(enqueueSnackbar, closeSnackbar, setLoading))
   };
 
   // formik
@@ -198,20 +170,20 @@ const Signin = () => {
           >
             {loading ? <CircularProgress size={18} /> : "Sign In"}
           </Button>
-          <Grid container>
+        </form>
+        <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              <Link to='#' variant="body2">
                 Forgot password?
               </Link>
             </Grid>
             <Grid item>
               Don't have an account?{" "}
-              <Link href="/register" variant="body2">
+              <Link to='/register' variant="body2">
                 Sign Up
               </Link>
             </Grid>
           </Grid>
-        </form>
       </div>
     </Container>
   );
